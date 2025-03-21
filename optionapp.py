@@ -20,13 +20,14 @@ st.markdown(
         color: #000000;
     }
 
-    /* Input fields & buttons */
+    /* Inputs, dropdowns, buttons */
     .stTextInput input, .stNumberInput input, .stSelectbox div[data-baseweb="select"], .stButton>button {
         border-radius: 8px;
         background-color: rgba(255, 255, 255, 0.9);
         color: black;
         border: 1px solid #555555;
-        padding: 10px;
+        padding: 8px;
+        font-size: 14px;
     }
 
     .stSelectbox div[data-baseweb="select"] div {
@@ -39,17 +40,16 @@ st.markdown(
         color: black;
     }
 
-    /* Section header labels */
     label {
         color: black !important;
         font-weight: bold;
     }
 
-    /* General block container behavior */
+    /* General responsiveness */
     .block-container {
         max-width: 100%;
-        padding-left: 1rem;
-        padding-right: 1rem;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
     }
 
     hr {
@@ -57,6 +57,7 @@ st.markdown(
         margin: 20px 0;
     }
 
+    /* Dataframe background */
     .css-1d391kg {
         background-color: #2c2c2e;
         color: white;
@@ -64,13 +65,9 @@ st.markdown(
 
     /* Mobile tweaks */
     @media screen and (max-width: 600px) {
-        .block-container {
-            padding-left: 0.5rem;
-            padding-right: 0.5rem;
-        }
         .stTextInput input, .stNumberInput input, .stSelectbox div[data-baseweb="select"], .stButton>button {
-            padding: 8px;
-            font-size: 14px;
+            padding: 6px;
+            font-size: 12px;
         }
     }
     </style>
@@ -78,13 +75,13 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# ---- Title ----
-st.title("Options Strategy Predictor")
+# ---- Centered Title ----
+st.markdown("<h1 style='text-align: center;'>Options Strategy Predictor</h1>", unsafe_allow_html=True)
 st.markdown("<hr>", unsafe_allow_html=True)
 
 # ---- Input Form ----
 with st.form("input_form"):
-    st.subheader("Input Parameters")
+    st.markdown("<h3 style='text-align: center;'>Input Parameters</h3>", unsafe_allow_html=True)
 
     ticker = st.text_input("Stock Ticker", "AAPL").upper()
     num_contracts = st.number_input("Number of Contracts", min_value=1, value=1, step=1)
@@ -111,10 +108,10 @@ with st.form("input_form"):
 if submit_button and ticker and exp_date and chosen_strike:
 
     st.markdown("<hr>", unsafe_allow_html=True)
-    st.subheader("Market Data & Option Chain")
+    st.markdown("<h3 style='text-align: center;'>Market Data & Option Chain</h3>", unsafe_allow_html=True)
 
     current_price = stock.history(period="1d")['Close'].iloc[-1]
-    st.write(f"Current Stock Price: **${current_price:.2f}**")
+    st.markdown(f"<p style='text-align: center;'>Current Stock Price: <strong>${current_price:.2f}</strong></p>", unsafe_allow_html=True)
 
     shares_per_contract = 100
 
@@ -144,14 +141,14 @@ if submit_button and ticker and exp_date and chosen_strike:
         prob_flat = 1 - (prob_up + prob_down)
 
         st.markdown("<hr>", unsafe_allow_html=True)
-        st.subheader("Scenario Probabilities")
-        st.write(f"Probability Stock Up > +{percent_up}%: **{prob_up:.2f}**")
-        st.write(f"Probability Stock Down > -{percent_down}%: **{prob_down:.2f}**")
-        st.write(f"Probability Flat (within ±{max(percent_up, percent_down)}%): **{prob_flat:.2f}**")
+        st.markdown("<h3 style='text-align: center;'>Scenario Probabilities</h3>", unsafe_allow_html=True)
+        st.markdown(f"<p style='text-align: center;'>Probability Stock Up > +{percent_up}%: <strong>{prob_up:.2f}</strong></p>", unsafe_allow_html=True)
+        st.markdown(f"<p style='text-align: center;'>Probability Stock Down > -{percent_down}%: <strong>{prob_down:.2f}</strong></p>", unsafe_allow_html=True)
+        st.markdown(f"<p style='text-align: center;'>Probability Flat (within ±{max(percent_up, percent_down)}%): <strong>{prob_flat:.2f}</strong></p>", unsafe_allow_html=True)
 
         # ---- Payoff Matrix ----
         st.markdown("<hr>", unsafe_allow_html=True)
-        st.subheader("Payoff Matrix Calculation")
+        st.markdown("<h3 style='text-align: center;'>Payoff Matrix Calculation</h3>", unsafe_allow_html=True)
 
         strategies = ['Buy Call', 'Buy Put', 'Write Call', 'Write Put']
         scenarios = [f'Stock Up {percent_up}%', f'Stock Down {percent_down}%', 'Stock Flat']
@@ -190,11 +187,11 @@ if submit_button and ticker and exp_date and chosen_strike:
             payoff_matrix.append(row)
 
         df = pd.DataFrame(payoff_matrix, index=strategies, columns=scenarios)
-        st.dataframe(df)
+        st.dataframe(df.style.set_table_attributes("style='margin-left: auto; margin-right: auto;'"))
 
         # ---- Strategy Suggestions ----
         st.markdown("<hr>", unsafe_allow_html=True)
-        st.subheader("Strategy Recommendations")
+        st.markdown("<h3 style='text-align: center;'>Strategy Recommendations</h3>", unsafe_allow_html=True)
 
         probabilities = [prob_up, prob_down, prob_flat]
         row_mins = np.min(payoff_matrix, axis=1)
@@ -206,14 +203,14 @@ if submit_button and ticker and exp_date and chosen_strike:
         optimal_expected_index = np.argmax(expected_values)
         optimal_expected_strategy = strategies[optimal_expected_index]
 
-        st.write(f"**Minimax Strategy:** {optimal_minimax_strategy} (worst-case payoff = ${minimax_value:.2f})")
-        st.write(f"**Expected Value Strategy:** {optimal_expected_strategy} (expected payoff = ${expected_values[optimal_expected_index]:.2f})")
+        st.markdown(f"<p style='text-align: center;'><strong>Minimax Strategy:</strong> {optimal_minimax_strategy} (worst-case payoff = ${minimax_value:.2f})</p>", unsafe_allow_html=True)
+        st.markdown(f"<p style='text-align: center;'><strong>Expected Value Strategy:</strong> {optimal_expected_strategy} (expected payoff = ${expected_values[optimal_expected_index]:.2f})</p>", unsafe_allow_html=True)
 
         # ---- Visualization ----
         st.markdown("<hr>", unsafe_allow_html=True)
-        st.subheader("Payoff Matrix Heatmap")
+        st.markdown("<h3 style='text-align: center;'>Payoff Matrix Heatmap</h3>", unsafe_allow_html=True)
 
-        fig, ax = plt.subplots(figsize=(8, 6))
+        fig, ax = plt.subplots(figsize=(5, 3))  # Smaller heatmap
         cax = ax.imshow(payoff_matrix, cmap='coolwarm', interpolation='nearest')
         ax.set_xticks(np.arange(len(scenarios)))
         ax.set_yticks(np.arange(len(strategies)))
