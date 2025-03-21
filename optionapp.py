@@ -206,7 +206,7 @@ if submit_button and ticker and exp_date and chosen_strike:
         st.markdown("<hr>", unsafe_allow_html=True)
         st.markdown("<h3 style='text-align: center;'>Payoff Matrix Heatmap</h3>", unsafe_allow_html=True)
 
-        fig, ax = plt.subplots(figsize=(4, 2.5))  # ORIGINAL COMPACT SIZE
+        fig, ax = plt.subplots(figsize=(2, 1.5))  # ORIGINAL COMPACT SIZE
         cax = ax.imshow(payoff_matrix, cmap='coolwarm', interpolation='nearest')
         ax.set_xticks(np.arange(len(scenarios)))
         ax.set_yticks(np.arange(len(strategies)))
