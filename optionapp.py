@@ -20,34 +20,29 @@ st.markdown(
         color: #000000;
     }
 
-    /* Transparent inputs & selects with black text */
     .stTextInput input, .stNumberInput input, .stSelectbox div[data-baseweb="select"], .stButton>button {
         border-radius: 8px;
-        background-color: rgba(255, 255, 255, 0.9); /* Light background for contrast */
+        background-color: rgba(255, 255, 255, 0.9);
         color: black;
         border: 1px solid #555555;
         padding: 10px;
     }
 
-    /* Dropdown options text color */
     .stSelectbox div[data-baseweb="select"] div {
         color: black;
         background-color: rgba(255, 255, 255, 0.9);
     }
 
-    /* Button hover */
     .stButton>button:hover {
         background-color: #999999;
         color: black;
     }
 
-    /* Labels/titles above input fields */
     label {
         color: black !important;
         font-weight: bold;
     }
 
-    /* Section headers */
     .block-container {
         padding-top: 2rem;
     }
@@ -57,7 +52,6 @@ st.markdown(
         margin: 20px 0;
     }
 
-    /* DataFrame Styling */
     .css-1d391kg {
         background-color: #2c2c2e;
         color: white;
@@ -83,13 +77,11 @@ with st.form("input_form"):
     exp_date = None
     chosen_strike = None
 
-    # --- Fetch expiration & strike dynamically ---
     if ticker:
         stock = yf.Ticker(ticker)
         expirations = stock.options
         exp_date = st.selectbox("Select Expiration Date", expirations)
 
-        # Strike prices
         options_chain = stock.option_chain(exp_date)
         calls = options_chain.calls[['strike', 'lastPrice']]
         puts = options_chain.puts[['strike', 'lastPrice']]
@@ -118,95 +110,98 @@ if submit_button and ticker and exp_date and chosen_strike:
     today = datetime.datetime.today()
     days_to_expiry = (expiry_date - today).days
 
-    annual_vol = volatility * np.sqrt(252)
-    daily_vol = annual_vol / np.sqrt(252)
+    if volatility == 0 or days_to_expiry <= 0:
+        st.error("Volatility data unavailable or expiration date is invalid. Please select a valid expiration and ensure stock has historical data.")
+    else:
+        annual_vol = volatility * np.sqrt(252)
+        daily_vol = annual_vol / np.sqrt(252)
 
-    threshold_up = percent_up / 100
-    threshold_down = -percent_down / 100
+        threshold_up = percent_up / 100
+        threshold_down = -percent_down / 100
 
-    z_up = (threshold_up) / (daily_vol * np.sqrt(days_to_expiry))
-    z_down = (threshold_down) / (daily_vol * np.sqrt(days_to_expiry))
+        z_up = (threshold_up) / (daily_vol * np.sqrt(days_to_expiry))
+        z_down = (threshold_down) / (daily_vol * np.sqrt(days_to_expiry))
 
-    prob_up = 1 - norm.cdf(z_up)
-    prob_down = norm.cdf(z_down)
-    prob_flat = 1 - (prob_up + prob_down)
+        prob_up = 1 - norm.cdf(z_up)
+        prob_down = norm.cdf(z_down)
+        prob_flat = 1 - (prob_up + prob_down)
 
-    st.markdown("<hr>", unsafe_allow_html=True)
-    st.subheader("Scenario Probabilities")
-    st.write(f"Probability Stock Up > +{percent_up}%: **{prob_up:.2f}**")
-    st.write(f"Probability Stock Down > -{percent_down}%: **{prob_down:.2f}**")
-    st.write(f"Probability Flat (within ±{max(percent_up, percent_down)}%): **{prob_flat:.2f}**")
+        st.markdown("<hr>", unsafe_allow_html=True)
+        st.subheader("Scenario Probabilities")
+        st.write(f"Probability Stock Up > +{percent_up}%: **{prob_up:.2f}**")
+        st.write(f"Probability Stock Down > -{percent_down}%: **{prob_down:.2f}**")
+        st.write(f"Probability Flat (within ±{max(percent_up, percent_down)}%): **{prob_flat:.2f}**")
 
-    # ---- Payoff Matrix ----
-    st.markdown("<hr>", unsafe_allow_html=True)
-    st.subheader("Payoff Matrix Calculation")
+        # ---- Payoff Matrix ----
+        st.markdown("<hr>", unsafe_allow_html=True)
+        st.subheader("Payoff Matrix Calculation")
 
-    strategies = ['Buy Call', 'Buy Put', 'Write Call', 'Write Put']
-    scenarios = [f'Stock Up {percent_up}%', f'Stock Down {percent_down}%', 'Stock Flat']
-    payoff_matrix = []
+        strategies = ['Buy Call', 'Buy Put', 'Write Call', 'Write Put']
+        scenarios = [f'Stock Up {percent_up}%', f'Stock Down {percent_down}%', 'Stock Flat']
+        payoff_matrix = []
 
-    for strategy in strategies:
-        row = []
-        for scenario in scenarios:
-            if scenario.startswith('Stock Up'):
-                new_price = chosen_strike * (1 + percent_up / 100)
-            elif scenario.startswith('Stock Down'):
-                new_price = chosen_strike * (1 - percent_down / 100)
-            else:
-                new_price = chosen_strike
+        for strategy in strategies:
+            row = []
+            for scenario in scenarios:
+                if scenario.startswith('Stock Up'):
+                    new_price = chosen_strike * (1 + percent_up / 100)
+                elif scenario.startswith('Stock Down'):
+                    new_price = chosen_strike * (1 - percent_down / 100)
+                else:
+                    new_price = chosen_strike
 
-            call_price_row = calls.loc[calls['strike'] == chosen_strike]
-            put_price_row = puts.loc[puts['strike'] == chosen_strike]
+                call_price_row = calls.loc[calls['strike'] == chosen_strike]
+                put_price_row = puts.loc[puts['strike'] == chosen_strike]
 
-            if not call_price_row.empty and not put_price_row.empty:
-                call_price = call_price_row['lastPrice'].values[0]
-                put_price = put_price_row['lastPrice'].values[0]
-            else:
-                call_price = 0
-                put_price = 0
+                if not call_price_row.empty and not put_price_row.empty:
+                    call_price = call_price_row['lastPrice'].values[0]
+                    put_price = put_price_row['lastPrice'].values[0]
+                else:
+                    call_price = 0
+                    put_price = 0
 
-            if strategy == 'Buy Call':
-                payoff = (max(0, new_price - chosen_strike) - call_price) * shares_per_contract * num_contracts
-            elif strategy == 'Buy Put':
-                payoff = (max(0, chosen_strike - new_price) - put_price) * shares_per_contract * num_contracts
-            elif strategy == 'Write Call':
-                payoff = (call_price - max(0, new_price - chosen_strike)) * shares_per_contract * num_contracts
-            elif strategy == 'Write Put':
-                payoff = (put_price - max(0, chosen_strike - new_price)) * shares_per_contract * num_contracts
+                if strategy == 'Buy Call':
+                    payoff = (max(0, new_price - chosen_strike) - call_price) * shares_per_contract * num_contracts
+                elif strategy == 'Buy Put':
+                    payoff = (max(0, chosen_strike - new_price) - put_price) * shares_per_contract * num_contracts
+                elif strategy == 'Write Call':
+                    payoff = (call_price - max(0, new_price - chosen_strike)) * shares_per_contract * num_contracts
+                elif strategy == 'Write Put':
+                    payoff = (put_price - max(0, chosen_strike - new_price)) * shares_per_contract * num_contracts
 
-            row.append(round(payoff, 2))
-        payoff_matrix.append(row)
+                row.append(round(payoff, 2))
+            payoff_matrix.append(row)
 
-    df = pd.DataFrame(payoff_matrix, index=strategies, columns=scenarios)
-    st.dataframe(df)
+        df = pd.DataFrame(payoff_matrix, index=strategies, columns=scenarios)
+        st.dataframe(df)
 
-    # ---- Strategy Suggestions ----
-    st.markdown("<hr>", unsafe_allow_html=True)
-    st.subheader("Strategy Recommendations")
+        # ---- Strategy Suggestions ----
+        st.markdown("<hr>", unsafe_allow_html=True)
+        st.subheader("Strategy Recommendations")
 
-    probabilities = [prob_up, prob_down, prob_flat]
-    row_mins = np.min(payoff_matrix, axis=1)
-    minimax_value = np.max(row_mins)
-    optimal_minimax_index = np.argmax(row_mins)
-    optimal_minimax_strategy = strategies[optimal_minimax_index]
+        probabilities = [prob_up, prob_down, prob_flat]
+        row_mins = np.min(payoff_matrix, axis=1)
+        minimax_value = np.max(row_mins)
+        optimal_minimax_index = np.argmax(row_mins)
+        optimal_minimax_strategy = strategies[optimal_minimax_index]
 
-    expected_values = np.dot(payoff_matrix, probabilities)
-    optimal_expected_index = np.argmax(expected_values)
-    optimal_expected_strategy = strategies[optimal_expected_index]
+        expected_values = np.dot(payoff_matrix, probabilities)
+        optimal_expected_index = np.argmax(expected_values)
+        optimal_expected_strategy = strategies[optimal_expected_index]
 
-    st.write(f"**Minimax Strategy:** {optimal_minimax_strategy} (worst-case payoff = ${minimax_value:.2f})")
-    st.write(f"**Expected Value Strategy:** {optimal_expected_strategy} (expected payoff = ${expected_values[optimal_expected_index]:.2f})")
+        st.write(f"**Minimax Strategy:** {optimal_minimax_strategy} (worst-case payoff = ${minimax_value:.2f})")
+        st.write(f"**Expected Value Strategy:** {optimal_expected_strategy} (expected payoff = ${expected_values[optimal_expected_index]:.2f})")
 
-    # ---- Visualization ----
-    st.markdown("<hr>", unsafe_allow_html=True)
-    st.subheader("Payoff Matrix Heatmap")
+        # ---- Visualization ----
+        st.markdown("<hr>", unsafe_allow_html=True)
+        st.subheader("Payoff Matrix Heatmap")
 
-    fig, ax = plt.subplots(figsize=(8, 6))
-    cax = ax.imshow(payoff_matrix, cmap='coolwarm', interpolation='nearest')
-    ax.set_xticks(np.arange(len(scenarios)))
-    ax.set_yticks(np.arange(len(strategies)))
-    ax.set_xticklabels(scenarios)
-    ax.set_yticklabels(strategies)
-    plt.setp(ax.get_xticklabels(), rotation=45, ha="right", rotation_mode="anchor")
-    fig.colorbar(cax, label='Payoff ($)')
-    st.pyplot(fig)
+        fig, ax = plt.subplots(figsize=(8, 6))
+        cax = ax.imshow(payoff_matrix, cmap='coolwarm', interpolation='nearest')
+        ax.set_xticks(np.arange(len(scenarios)))
+        ax.set_yticks(np.arange(len(strategies)))
+        ax.set_xticklabels(scenarios)
+        ax.set_yticklabels(strategies)
+        plt.setp(ax.get_xticklabels(), rotation=45, ha="right", rotation_mode="anchor")
+        fig.colorbar(cax, label='Payoff ($)')
+        st.pyplot(fig)
