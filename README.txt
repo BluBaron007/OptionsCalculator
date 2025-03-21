@@ -44,5 +44,5 @@ A professional-grade web application for modeling and evaluating options strateg
 1. Clone repository:
 
 ```bash
-git clone https://github.com/your-username/options-strategy-predictor.git
+git clone https://github.com/blubaron007/options-strategy-predictor.git
 cd options-strategy-predictor
