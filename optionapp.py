@@ -64,7 +64,21 @@ with st.form("input_form"):
     percent_up = st.number_input("Stock Move Up (%)", min_value=1, max_value=500, value=10, step=1)
     percent_down = st.number_input("Stock Move Down (%)", min_value=1, max_value=500, value=10, step=1)
 
+    # --- Fetch expiration & strike dynamically ---
+    if ticker:
+        stock = yf.Ticker(ticker)
+        expirations = stock.options
+        exp_date = st.selectbox("Select Expiration Date", expirations)
+
+        # Strike prices
+        options_chain = stock.option_chain(exp_date)
+        calls = options_chain.calls[['strike', 'lastPrice']]
+        puts = options_chain.puts[['strike', 'lastPrice']]
+        available_strikes = sorted(list(set(calls['strike']).intersection(set(puts['strike']))))
+        chosen_strike = st.selectbox("Select Strike Price", available_strikes)
+
     submit_button = st.form_submit_button(label='Run Strategy Analysis')
+
 
 # ---- Processing After Submission ----
 if submit_button:
