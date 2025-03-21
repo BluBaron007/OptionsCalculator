@@ -10,21 +10,21 @@ import datetime
 st.markdown(
     """
     <style>
-    /* Background Gradient */
+    /* Softer Gradient */
     body {
-        background: linear-gradient(135deg, #1f1f1f, #2e2e2e);
-        color: #ffffff;
+        background: linear-gradient(135deg, #1c1c1e, #2c2c2e);
+        color: #e0e0e0;
     }
 
     html, body, [class*="css"]  {
         font-family: 'Arial', sans-serif;
-        color: #ffffff;
+        color: #e0e0e0;
     }
 
     /* Input fields styling */
     .stTextInput input, .stNumberInput input, .stSelectbox div, .stButton button {
         border-radius: 8px;
-        background-color: #2e2e2e;
+        background-color: #333333;
         color: white;
         border: 1px solid #444444;
         padding: 10px;
@@ -49,6 +49,7 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+
 
 # ---- Title ----
 st.title("Options Strategy Predictor")
