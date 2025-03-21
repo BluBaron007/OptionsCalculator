@@ -20,7 +20,6 @@ st.markdown(
         color: #000000;
     }
 
-    /* Inputs, dropdowns, buttons */
     .stTextInput input, .stNumberInput input, .stSelectbox div[data-baseweb="select"], .stButton>button {
         border-radius: 8px;
         background-color: rgba(255, 255, 255, 0.9);
@@ -45,7 +44,6 @@ st.markdown(
         font-weight: bold;
     }
 
-    /* General responsiveness */
     .block-container {
         max-width: 100%;
         padding-left: 0.5rem;
@@ -57,13 +55,11 @@ st.markdown(
         margin: 20px 0;
     }
 
-    /* Dataframe background */
     .css-1d391kg {
         background-color: #2c2c2e;
         color: white;
     }
 
-    /* Mobile tweaks */
     @media screen and (max-width: 600px) {
         .stTextInput input, .stNumberInput input, .stSelectbox div[data-baseweb="select"], .stButton>button {
             padding: 6px;
@@ -75,7 +71,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# ---- Centered Title ----
+# ---- Title ----
 st.markdown("<h1 style='text-align: center;'>Options Strategy Predictor</h1>", unsafe_allow_html=True)
 st.markdown("<hr>", unsafe_allow_html=True)
 
@@ -210,7 +206,7 @@ if submit_button and ticker and exp_date and chosen_strike:
         st.markdown("<hr>", unsafe_allow_html=True)
         st.markdown("<h3 style='text-align: center;'>Payoff Matrix Heatmap</h3>", unsafe_allow_html=True)
 
-        fig, ax = plt.subplots(figsize=(5, 3))  # Smaller heatmap
+        fig, ax = plt.subplots(figsize=(4, 2.5))  # ORIGINAL COMPACT SIZE
         cax = ax.imshow(payoff_matrix, cmap='coolwarm', interpolation='nearest')
         ax.set_xticks(np.arange(len(scenarios)))
         ax.set_yticks(np.arange(len(strategies)))
