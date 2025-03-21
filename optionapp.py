@@ -12,45 +12,49 @@ st.markdown(
     <style>
     body {
         background: linear-gradient(135deg, #1c1c1e, #2c2c2e);
-        color: #e0e0e0;
-    }
-    html, body, [class*="css"]  {
-        font-family: 'Arial', sans-serif;
-        color: #e0e0e0;
+        color: #000000;
     }
 
-    /* Transparent inputs & selects */
+    html, body, [class*="css"]  {
+        font-family: 'Arial', sans-serif;
+        color: #000000;
+    }
+
+    /* Transparent inputs & selects with black text */
     .stTextInput input, .stNumberInput input, .stSelectbox div[data-baseweb="select"], .stButton>button {
         border-radius: 8px;
-        background-color: rgba(0, 0, 0, 0.0);
-        color: white;
+        background-color: rgba(255, 255, 255, 0.9); /* Light background for contrast */
+        color: black;
         border: 1px solid #555555;
         padding: 10px;
     }
 
-    /* Dropdown options */
+    /* Dropdown options text color */
     .stSelectbox div[data-baseweb="select"] div {
-        color: white;
-        background-color: transparent;
+        color: black;
+        background-color: rgba(255, 255, 255, 0.9);
     }
 
-    /* Button Hover */
+    /* Button hover */
     .stButton>button:hover {
-        background-color: #333333;
-        color: white;
+        background-color: #999999;
+        color: black;
     }
 
-    /* Headers */
+    /* Labels/titles above input fields */
+    label {
+        color: black !important;
+        font-weight: bold;
+    }
+
+    /* Section headers */
     .block-container {
         padding-top: 2rem;
     }
+
     hr {
         border: 1px solid #444444;
         margin: 20px 0;
-    }
-    label {
-        color: #e0e0e0 !important;
-        font-weight: bold;
     }
 
     /* DataFrame Styling */
