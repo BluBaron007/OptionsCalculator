@@ -3,6 +3,7 @@ import yfinance as yf
 import numpy as np
 import pandas as pd
 from scipy.stats import norm
+import matplotlib.pyplot as plt
 import datetime
 
 # ---- Custom CSS Styling ----
@@ -200,3 +201,24 @@ if submit_button and ticker and exp_date and chosen_strike:
 
         st.markdown(f"<p style='text-align: center;'><strong>Minimax Strategy:</strong> {optimal_minimax_strategy} (worst-case payoff = ${minimax_value:.2f})</p>", unsafe_allow_html=True)
         st.markdown(f"<p style='text-align: center;'><strong>Expected Value Strategy:</strong> {optimal_expected_strategy} (expected payoff = ${expected_values[optimal_expected_index]:.2f})</p>", unsafe_allow_html=True)
+
+        # ---- Payoff Chart ----
+        st.markdown("<hr>", unsafe_allow_html=True)
+        st.markdown("<h3 style='text-align: center;'>Payoff Comparison Chart</h3>", unsafe_allow_html=True)
+
+        payoff_matrix_np = np.array(payoff_matrix)
+        bar_width = 0.2
+        x = np.arange(len(scenarios))
+
+        fig, ax = plt.subplots(figsize=(4.5, 2.8))  # Compact size
+
+        for i in range(len(strategies)):
+            ax.bar(x + i * bar_width, payoff_matrix_np[i], width=bar_width, label=strategies[i])
+
+        ax.set_xticks(x + bar_width * 1.5)
+        ax.set_xticklabels(scenarios, fontsize=8)
+        ax.legend(loc='upper left', fontsize=8)
+        ax.set_ylabel('Payoff ($)', fontsize=8)
+        ax.set_title('Payoff by Strategy', fontsize=10)
+        plt.tight_layout()
+        st.pyplot(fig)
