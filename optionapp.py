@@ -20,6 +20,7 @@ st.markdown(
         color: #000000;
     }
 
+    /* Input fields & buttons */
     .stTextInput input, .stNumberInput input, .stSelectbox div[data-baseweb="select"], .stButton>button {
         border-radius: 8px;
         background-color: rgba(255, 255, 255, 0.9);
@@ -38,13 +39,17 @@ st.markdown(
         color: black;
     }
 
+    /* Section header labels */
     label {
         color: black !important;
         font-weight: bold;
     }
 
+    /* General block container behavior */
     .block-container {
-        padding-top: 2rem;
+        max-width: 100%;
+        padding-left: 1rem;
+        padding-right: 1rem;
     }
 
     hr {
@@ -55,6 +60,18 @@ st.markdown(
     .css-1d391kg {
         background-color: #2c2c2e;
         color: white;
+    }
+
+    /* Mobile tweaks */
+    @media screen and (max-width: 600px) {
+        .block-container {
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+        }
+        .stTextInput input, .stNumberInput input, .stSelectbox div[data-baseweb="select"], .stButton>button {
+            padding: 8px;
+            font-size: 14px;
+        }
     }
     </style>
     """,
