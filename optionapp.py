@@ -18,20 +18,29 @@ st.markdown(
         font-family: 'Arial', sans-serif;
         color: #e0e0e0;
     }
+
+    /* Transparent inputs & selects */
     .stTextInput input, .stNumberInput input, .stSelectbox div[data-baseweb="select"], .stButton>button {
         border-radius: 8px;
-        background-color: #333333;
+        background-color: rgba(0, 0, 0, 0.0);
         color: white;
-        border: 1px solid #444444;
+        border: 1px solid #555555;
         padding: 10px;
     }
+
+    /* Dropdown options */
     .stSelectbox div[data-baseweb="select"] div {
         color: white;
+        background-color: transparent;
     }
+
+    /* Button Hover */
     .stButton>button:hover {
-        background-color: #444444;
+        background-color: #333333;
         color: white;
     }
+
+    /* Headers */
     .block-container {
         padding-top: 2rem;
     }
@@ -43,6 +52,8 @@ st.markdown(
         color: #e0e0e0 !important;
         font-weight: bold;
     }
+
+    /* DataFrame Styling */
     .css-1d391kg {
         background-color: #2c2c2e;
         color: white;
@@ -52,6 +63,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+# ---- Title ----
 st.title("Options Strategy Predictor")
 st.markdown("<hr>", unsafe_allow_html=True)
 
