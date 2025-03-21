@@ -10,48 +10,48 @@ import datetime
 st.markdown(
     """
     <style>
-    /* Softer Gradient */
     body {
         background: linear-gradient(135deg, #1c1c1e, #2c2c2e);
         color: #e0e0e0;
     }
-
     html, body, [class*="css"]  {
         font-family: 'Arial', sans-serif;
         color: #e0e0e0;
     }
-
-    /* Input fields styling */
-    .stTextInput input, .stNumberInput input, .stSelectbox div, .stButton button {
+    .stTextInput input, .stNumberInput input, .stSelectbox div[data-baseweb="select"], .stButton>button {
         border-radius: 8px;
         background-color: #333333;
         color: white;
         border: 1px solid #444444;
         padding: 10px;
     }
-
-    /* Button Hover Effect */
+    .stSelectbox div[data-baseweb="select"] div {
+        color: white;
+    }
     .stButton>button:hover {
         background-color: #444444;
         color: white;
     }
-
-    /* Section Headers */
     .block-container {
         padding-top: 2rem;
     }
-
     hr {
         border: 1px solid #444444;
         margin: 20px 0;
+    }
+    label {
+        color: #e0e0e0 !important;
+        font-weight: bold;
+    }
+    .css-1d391kg {
+        background-color: #2c2c2e;
+        color: white;
     }
     </style>
     """,
     unsafe_allow_html=True
 )
 
-
-# ---- Title ----
 st.title("Options Strategy Predictor")
 st.markdown("<hr>", unsafe_allow_html=True)
 
@@ -63,6 +63,9 @@ with st.form("input_form"):
     num_contracts = st.number_input("Number of Contracts", min_value=1, value=1, step=1)
     percent_up = st.number_input("Stock Move Up (%)", min_value=1, max_value=500, value=10, step=1)
     percent_down = st.number_input("Stock Move Down (%)", min_value=1, max_value=500, value=10, step=1)
+
+    exp_date = None
+    chosen_strike = None
 
     # --- Fetch expiration & strike dynamically ---
     if ticker:
@@ -79,30 +82,18 @@ with st.form("input_form"):
 
     submit_button = st.form_submit_button(label='Run Strategy Analysis')
 
+# ---- After Submit ----
+if submit_button and ticker and exp_date and chosen_strike:
 
-# ---- Processing After Submission ----
-if submit_button:
     st.markdown("<hr>", unsafe_allow_html=True)
     st.subheader("Market Data & Option Chain")
 
-    stock = yf.Ticker(ticker)
     current_price = stock.history(period="1d")['Close'].iloc[-1]
     st.write(f"Current Stock Price: **${current_price:.2f}**")
 
-    # Expiration Dates
-    expirations = stock.options
-    exp_date = st.selectbox("Select Expiration Date", expirations)
-    options_chain = stock.option_chain(exp_date)
-
-    # Strike Price Options
-    calls = options_chain.calls[['strike', 'lastPrice']]
-    puts = options_chain.puts[['strike', 'lastPrice']]
-    available_strikes = sorted(list(set(calls['strike']).intersection(set(puts['strike']))))
-    chosen_strike = st.selectbox("Select Strike Price", available_strikes)
-
     shares_per_contract = 100
 
-    # Historical Volatility Calculation
+    # ---- Volatility Calculation ----
     history = stock.history(period="60d")
     history['Return'] = history['Close'].pct_change()
     volatility = history['Return'].std()
@@ -130,7 +121,7 @@ if submit_button:
     st.write(f"Probability Stock Down > -{percent_down}%: **{prob_down:.2f}**")
     st.write(f"Probability Flat (within ±{max(percent_up, percent_down)}%): **{prob_flat:.2f}**")
 
-    # ---- Payoff Matrix Calculation ----
+    # ---- Payoff Matrix ----
     st.markdown("<hr>", unsafe_allow_html=True)
     st.subheader("Payoff Matrix Calculation")
 
