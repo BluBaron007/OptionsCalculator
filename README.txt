@@ -19,7 +19,7 @@ A professional-grade web application for modeling and evaluating options strateg
 
 - **Advanced Scenario Analysis**  
   - Calculates scenario probabilities based on historical volatility.
-  - Provides **Minimax Strategy** (worst-case payoff) and **Expected Value Strategy** recommendations.
+  - Provides **Minimax Strategy** (worst-case payoff) and **Expected Value Strategy** recommendations based on John Von Neumanns' theory.
 
 - **Payoff Matrix Visualization**  
   Interactive matrix and heatmap visuals displaying payoffs under user-defined scenarios.
