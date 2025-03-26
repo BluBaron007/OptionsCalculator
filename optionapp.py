@@ -11,7 +11,7 @@ import datetime
 st.markdown("""
     <style>
     html, body, .stApp {
-        background-color: #F8F8FF !important;
+        background-color: #FFFAFA !important;
     }
     </style>
 """, unsafe_allow_html=True)
