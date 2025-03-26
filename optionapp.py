@@ -12,6 +12,12 @@ st.markdown(
     body {
         background: linear-gradient(135deg, #1c1c1e, #2c2c2e);
         color: #000000;
+        animation: fadeInBody 1s ease-in;
+    }
+
+    @keyframes fadeInBody {
+        from {opacity: 0;}
+        to {opacity: 1;}
     }
 
     html, body, [class*="css"]  {
@@ -26,11 +32,21 @@ st.markdown(
         border: 1px solid #555555;
         padding: 8px;
         font-size: 14px;
+        animation: fadeInBox 1s ease-in;
     }
 
-    .stSelectbox div[data-baseweb="select"] div {
-        color: black;
-        background-color: rgba(255, 255, 255, 0.9);
+    @keyframes fadeInBox {
+        from {opacity: 0; transform: translateY(10px);}
+        to {opacity: 1; transform: translateY(0);}
+    }
+
+    h1, h3, p {
+        animation: fadeInHeader 1s ease-in;
+    }
+
+    @keyframes fadeInHeader {
+        from {opacity: 0; transform: translateY(-10px);}
+        to {opacity: 1; transform: translateY(0);}
     }
 
     .stButton>button:hover {
@@ -137,9 +153,15 @@ if submit_button and ticker and exp_date and chosen_strike:
 
         st.markdown("<hr>", unsafe_allow_html=True)
         st.markdown("<h3 style='text-align: center;'>Scenario Probabilities</h3>", unsafe_allow_html=True)
-        st.markdown(f"<p style='text-align: center;'>Probability Stock Up > +{percent_up}%: <strong>{prob_up:.2f}</strong></p>", unsafe_allow_html=True)
-        st.markdown(f"<p style='text-align: center;'>Probability Stock Down > -{percent_down}%: <strong>{prob_down:.2f}</strong></p>", unsafe_allow_html=True)
-        st.markdown(f"<p style='text-align: center;'>Probability Flat (within ±{max(percent_up, percent_down)}%): <strong>{prob_flat:.2f}</strong></p>", unsafe_allow_html=True)
+
+        # ---- Color-Dynamic Probabilities ----
+        up_color = "green" if prob_up > 0.5 else "red"
+        down_color = "green" if prob_down > 0.5 else "red"
+        flat_color = "green" if prob_flat > 0.5 else "red"
+
+        st.markdown(f"<p style='text-align: center; color:{up_color};'>Probability Stock Up > +{percent_up}%: <strong>{prob_up:.2f}</strong></p>", unsafe_allow_html=True)
+        st.markdown(f"<p style='text-align: center; color:{down_color};'>Probability Stock Down > -{percent_down}%: <strong>{prob_down:.2f}</strong></p>", unsafe_allow_html=True)
+        st.markdown(f"<p style='text-align: center; color:{flat_color};'>Probability Flat (within ±{max(percent_up, percent_down)}%): <strong>{prob_flat:.2f}</strong></p>", unsafe_allow_html=True)
 
         # ---- Payoff Matrix ----
         st.markdown("<hr>", unsafe_allow_html=True)
