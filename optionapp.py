@@ -10,7 +10,7 @@ st.markdown("""
 <style>
 body {
     background: linear-gradient(135deg, #1c1c1e, #2c2c2e);
-    color: #de6900;
+    color: #deb887 ;
     animation: fadeInBody 1s ease-in;
 }
 
@@ -21,7 +21,7 @@ body {
 
 html, body, [class*="css"] {
     font-family: 'Arial', sans-serif;
-    color: #000000;
+    color: #deb887 ;
 }
 
 .stTextInput input, .stNumberInput input, .stSelectbox div[data-baseweb="select"], .stButton>button {
