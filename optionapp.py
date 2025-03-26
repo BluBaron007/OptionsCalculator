@@ -87,7 +87,8 @@ st.markdown(
 )
 
 # ---- Title ----
-st.markdown("<h1 style='text-align: center;'>Options Strategy Predictor</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center;'>Options Strategy Calculator</h1>", unsafe_allow_html=True)
+st.markdown("<h2 style='text-align: center;'>Where Game Theory & Stock Options Combiner</h2>", unsafe_allow_html=True)
 st.markdown("<hr>", unsafe_allow_html=True)
 
 # ---- Input Form ----
