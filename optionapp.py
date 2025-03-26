@@ -6,16 +6,16 @@ from scipy.stats import norm
 import datetime
 
 # ---- Custom CSS Styling ----
-st.markdown("""
-<style>
-body {
-    background: linear-gradient(135deg, #1c1c1e, #2c2c2e);
-    color: #000000;
-    animation: fadeInBody 1s ease-in;
-}
-@keyframes fadeInBody {
-    from {opacity: 0;}
-    to {opacity: 1;}
+st.markdown(
+    """
+    <style>
+    .stApp {
+        background-color: #deb887;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 }
 html, body, [class*="css"] {
     font-family: 'Arial', sans-serif;
