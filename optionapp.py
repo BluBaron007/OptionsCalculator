@@ -5,27 +5,27 @@ import pandas as pd
 from scipy.stats import norm
 import datetime
 
-# --------------------------------------------
-# 🔒 Force Background Color Before Anything Renders
-# --------------------------------------------
+# -----------------------------
+# 🔒 Force Background to Light Aqua
+# -----------------------------
 st.markdown("""
     <style>
     html, body, .stApp {
-        background-color: #FFFAFA !important;
+        background-color: #F0FFFF !important;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# --------------------------------------------
-# 📊 Title and Description
-# --------------------------------------------
+# -----------------------------
+# 📊 App Header
+# -----------------------------
 st.markdown("<h1 style='text-align: center;'>Options Strategy Predictor</h1>", unsafe_allow_html=True)
 st.markdown("<h4 style='text-align: center;'>Where Game Theory & Stock Options Collide</h4>", unsafe_allow_html=True)
 st.markdown("---")
 
-# --------------------------------------------
+# -----------------------------
 # 🧾 Input Form
-# --------------------------------------------
+# -----------------------------
 with st.form("input_form"):
     st.subheader("Input Parameters")
     ticker = st.text_input("Stock Ticker", "AAPL").upper()
@@ -49,9 +49,9 @@ with st.form("input_form"):
 
     submitted = st.form_submit_button("Run Strategy Analysis")
 
-# --------------------------------------------
+# -----------------------------
 # 📈 Strategy Logic & Output
-# --------------------------------------------
+# -----------------------------
 if submitted and ticker and exp_date and chosen_strike:
     st.markdown("---")
     st.subheader("Market Snapshot")
@@ -59,12 +59,26 @@ if submitted and ticker and exp_date and chosen_strike:
     current_price = history['Close'].iloc[-1]
     st.write(f"📌 Current Stock Price: **${current_price:.2f}**")
 
+    # ✅ CLEAN FONT: Moving Averages
     ma_5 = history['Close'].rolling(window=5).mean().iloc[-1]
     ma_10 = history['Close'].rolling(window=10).mean().iloc[-1]
     ma_50 = history['Close'].rolling(window=50).mean().iloc[-1]
     ma_200 = history['Close'].rolling(window=200).mean().iloc[-1]
-    st.write(f"📈 Moving Averages: 5D: ${ma_5:.2f}, 10D: ${ma_10:.2f}, 50D: ${ma_50:.2f}, 200D: ${ma_200:.2f}")
 
+    st.markdown(
+        f"""
+        <p style='text-align: center;'>
+        📊 <strong>Moving Averages:</strong>
+        <strong>5D</strong>: ${ma_5:.2f}, 
+        <strong>10D</strong>: ${ma_10:.2f}, 
+        <strong>50D</strong>: ${ma_50:.2f}, 
+        <strong>200D</strong>: ${ma_200:.2f}
+        </p>
+        """,
+        unsafe_allow_html=True
+    )
+
+    # Trend Detection
     if current_price > max(ma_5, ma_10, ma_50, ma_200):
         trend = "Uptrend"
     elif current_price < min(ma_5, ma_10, ma_50, ma_200):
@@ -74,6 +88,7 @@ if submitted and ticker and exp_date and chosen_strike:
 
     st.write(f"📊 Detected Trend: **{trend}**")
 
+    # Volatility
     history['Return'] = history['Close'].pct_change()
     volatility = history['Return'].std()
     days_to_expiry = (datetime.datetime.strptime(exp_date, "%Y-%m-%d") - datetime.datetime.today()).days
@@ -108,6 +123,7 @@ if submitted and ticker and exp_date and chosen_strike:
         st.write(f"• Stock Down > -{percent_down}%: **{prob_down:.2%}**")
         st.write(f"• Flat (within range): **{prob_flat:.2%}**")
 
+        # Payoff Matrix
         strategies = ['Buy Call', 'Buy Put', 'Write Call', 'Write Put']
         scenarios = [f'Up {percent_up}%', f'Down {percent_down}%', 'Flat']
         matrix = []
