@@ -10,20 +10,17 @@ st.markdown("""
 <style>
 body {
     background: linear-gradient(135deg, #1c1c1e, #2c2c2e);
-    color: #deb887 ;
+    color: #000000;
     animation: fadeInBody 1s ease-in;
 }
-
 @keyframes fadeInBody {
     from {opacity: 0;}
     to {opacity: 1;}
 }
-
 html, body, [class*="css"] {
     font-family: 'Arial', sans-serif;
-    color: #deb887 ;
+    color: #000000;
 }
-
 .stTextInput input, .stNumberInput input, .stSelectbox div[data-baseweb="select"], .stButton>button {
     border-radius: 8px;
     background-color: rgba(255, 255, 255, 0.9);
@@ -33,42 +30,34 @@ html, body, [class*="css"] {
     font-size: 14px;
     animation: fadeInBox 1s ease-in;
 }
-
 @keyframes fadeInBox {
     from {opacity: 0; transform: translateY(10px);}
     to {opacity: 1; transform: translateY(0);}
 }
-
 h1, h3, p {
     animation: fadeInHeader 1s ease-in;
 }
-
 @keyframes fadeInHeader {
     from {opacity: 0; transform: translateY(-10px);}
     to {opacity: 1; transform: translateY(0);}
 }
-
 label {
     color: black !important;
     font-weight: bold;
 }
-
 .block-container {
     max-width: 100%;
     padding-left: 0.5rem;
     padding-right: 0.5rem;
 }
-
 hr {
     border: 1px solid #444444;
     margin: 20px 0;
 }
-
 .css-1d391kg {
-    background-color: #deb887;
+    background-color: #2c2c2e;
     color: white;
 }
-
 @media screen and (max-width: 600px) {
     .stTextInput input, .stNumberInput input, .stSelectbox div[data-baseweb="select"], .stButton>button {
         padding: 6px;
@@ -80,7 +69,7 @@ hr {
 
 # ---- Title ----
 st.markdown("<h1 style='text-align: center;'>Options Strategy Predictor</h1>", unsafe_allow_html=True)
-st.markdown("<h3 style='text-align: center;'>Where Game Theory & Stock Options Combine</h3>", unsafe_allow_html=True)
+st.markdown("<h3 style='text-align: center;'>Where Game Theory & Stock Options Collide</h3>", unsafe_allow_html=True)
 
 st.markdown("<hr>", unsafe_allow_html=True)
 
@@ -111,11 +100,10 @@ with st.form("input_form"):
 
 # ---- After Submit ----
 if submit_button and ticker and exp_date and chosen_strike:
-
     st.markdown("<hr>", unsafe_allow_html=True)
     st.markdown("<h3 style='text-align: center;'>Market Data & Option Chain</h3>", unsafe_allow_html=True)
 
-    history = stock.history(period="250d")  # 1 year of data
+    history = stock.history(period="250d")
     current_price = history['Close'].iloc[-1]
     st.markdown(f"<p style='text-align: center;'>Current Stock Price: <strong>${current_price:.2f}</strong></p>", unsafe_allow_html=True)
 
@@ -128,7 +116,6 @@ if submit_button and ticker and exp_date and chosen_strike:
     st.markdown("<h3 style='text-align: center;'>Trend Analysis (MA)</h3>", unsafe_allow_html=True)
     st.markdown(f"<p style='text-align: center;'>5D MA: <strong>${ma_5:.2f}</strong> | 10D MA: <strong>${ma_10:.2f}</strong><br>50D MA: <strong>${ma_50:.2f}</strong> | 200D MA: <strong>${ma_200:.2f}</strong></p>", unsafe_allow_html=True)
 
-    # ---- Trend Classification ----
     if current_price > ma_5 and current_price > ma_10 and current_price > ma_50 and current_price > ma_200:
         trend = "Uptrend"
     elif current_price < ma_5 and current_price < ma_10 and current_price < ma_50 and current_price < ma_200:
@@ -138,7 +125,7 @@ if submit_button and ticker and exp_date and chosen_strike:
 
     st.markdown(f"<p style='text-align: center;'><strong>Detected Trend:</strong> {trend}</p>", unsafe_allow_html=True)
 
-    # ---- Volatility Calculation ----
+    # ---- Volatility & Probabilities ----
     history['Return'] = history['Close'].pct_change()
     volatility = history['Return'].std()
 
@@ -162,7 +149,7 @@ if submit_button and ticker and exp_date and chosen_strike:
         prob_down = norm.cdf(z_down)
         prob_flat = 1 - (prob_up + prob_down)
 
-        # ---- Adjust Probabilities Based on Trend ----
+        # ---- Adjust for Trend ----
         if trend == "Uptrend":
             prob_up *= 1.10
             prob_down *= 0.90
@@ -186,9 +173,9 @@ if submit_button and ticker and exp_date and chosen_strike:
 
         st.markdown(f"<p style='text-align: center; color:{up_color};'>Probability Stock Up > +{percent_up}%: <strong>{prob_up:.2f}</strong></p>", unsafe_allow_html=True)
         st.markdown(f"<p style='text-align: center; color:{down_color};'>Probability Stock Down > -{percent_down}%: <strong>{prob_down:.2f}</strong></p>", unsafe_allow_html=True)
-        st.markdown(f"<p style='text-align: center; color:{flat_color};'>Probability Flat (within ±{max(percent_up, percent_down)}%): <strong>{prob_flat:.2f}</strong></p>", unsafe_allow_html=True)
+        st.markdown(f"<p style='text-align: center; color:{flat_color};'>Probability Flat: <strong>{prob_flat:.2f}</strong></p>", unsafe_allow_html=True)
 
-        # ---- Payoff Matrix Calculation ----
+        # ---- Payoff Matrix ----
         st.markdown("<hr>", unsafe_allow_html=True)
         st.markdown("<h3 style='text-align: center;'>Payoff Matrix</h3>", unsafe_allow_html=True)
 
@@ -207,11 +194,8 @@ if submit_button and ticker and exp_date and chosen_strike:
                 else:
                     new_price = chosen_strike
 
-                call_price_row = calls.loc[calls['strike'] == chosen_strike]
-                put_price_row = puts.loc[puts['strike'] == chosen_strike]
-
-                call_price = call_price_row['lastPrice'].values[0] if not call_price_row.empty else 0
-                put_price = put_price_row['lastPrice'].values[0] if not put_price_row.empty else 0
+                call_price = calls.loc[calls['strike'] == chosen_strike, 'lastPrice'].values[0]
+                put_price = puts.loc[puts['strike'] == chosen_strike, 'lastPrice'].values[0]
 
                 if strategy == 'Buy Call':
                     payoff = (max(0, new_price - chosen_strike) - call_price) * shares_per_contract * num_contracts
@@ -228,7 +212,7 @@ if submit_button and ticker and exp_date and chosen_strike:
         df = pd.DataFrame(payoff_matrix, index=strategies, columns=scenarios)
         st.dataframe(df.style.set_table_attributes("style='margin-left: auto; margin-right: auto;'"))
 
-        # ---- Strategy Recommendations ----
+        # ---- Strategy Recommendation ----
         st.markdown("<hr>", unsafe_allow_html=True)
         st.markdown("<h3 style='text-align: center;'>Strategy Recommendations</h3>", unsafe_allow_html=True)
 
