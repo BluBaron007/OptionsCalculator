@@ -5,7 +5,7 @@ import pandas as pd
 from scipy.stats import norm
 import datetime
 
-# ---- Custom CSS Styling ----
+# ---- Custom Background Color ----
 st.markdown(
     """
     <style>
@@ -16,56 +16,6 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
-}
-html, body, [class*="css"] {
-    font-family: 'Arial', sans-serif;
-    color: #000000;
-}
-.stTextInput input, .stNumberInput input, .stSelectbox div[data-baseweb="select"], .stButton>button {
-    border-radius: 8px;
-    background-color: rgba(255, 255, 255, 0.9);
-    color: black;
-    border: 1px solid #555555;
-    padding: 8px;
-    font-size: 14px;
-    animation: fadeInBox 1s ease-in;
-}
-@keyframes fadeInBox {
-    from {opacity: 0; transform: translateY(10px);}
-    to {opacity: 1; transform: translateY(0);}
-}
-h1, h3, p {
-    animation: fadeInHeader 1s ease-in;
-}
-@keyframes fadeInHeader {
-    from {opacity: 0; transform: translateY(-10px);}
-    to {opacity: 1; transform: translateY(0);}
-}
-label {
-    color: black !important;
-    font-weight: bold;
-}
-.block-container {
-    max-width: 100%;
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
-}
-hr {
-    border: 1px solid #444444;
-    margin: 20px 0;
-}
-.css-1d391kg {
-    background-color: #2c2c2e;
-    color: white;
-}
-@media screen and (max-width: 600px) {
-    .stTextInput input, .stNumberInput input, .stSelectbox div[data-baseweb="select"], .stButton>button {
-        padding: 6px;
-        font-size: 12px;
-    }
-}
-</style>
-""", unsafe_allow_html=True)
 
 # ---- Title ----
 st.markdown("<h1 style='text-align: center;'>Options Strategy Predictor</h1>", unsafe_allow_html=True)
