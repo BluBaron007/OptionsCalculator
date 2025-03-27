@@ -27,7 +27,7 @@ st.markdown("---")
 # 🧾 Input Form
 # -----------------------------
 with st.form("input_form"):
-    st.subheader("Lets Start With The Ticker")
+    st.subheader("Enter The Stock Below")
     ticker = st.text_input("Stock Ticker", "AAPL").upper()
     num_contracts = st.number_input("Number of Contracts", min_value=1, value=1)
     percent_up = st.number_input("Stock Move Up (%)", min_value=1, value=10)
