@@ -13,16 +13,6 @@ st.markdown("""
     html, body, .stApp {
         background-color: #F8F8FF !important;
     }
-    .glass-form {
-        background: rgba(255, 255, 255, 0.55);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border-radius: 30px;
-        padding: 35px 25px;
-        margin-top: 20px;
-        border: 1.5px solid rgba(0, 0, 0, 0.05);
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-    }
     </style>
 """, unsafe_allow_html=True)
 
