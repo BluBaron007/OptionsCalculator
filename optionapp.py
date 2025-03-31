@@ -6,18 +6,28 @@ from scipy.stats import norm
 import datetime
 
 # -----------------------------
-# 🔧 CSS for Aqua Background + Modern Glass Form
+# 🔧 CSS for Aqua Background + Glass Form
 # -----------------------------
 st.markdown("""
     <style>
     html, body, .stApp {
         background-color: #F8F8FF !important;
     }
+    .glass-form {
+        background: rgba(255, 255, 255, 0.55);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-radius: 30px;
+        padding: 35px 25px;
+        margin-top: 20px;
+        border: 1.5px solid rgba(0, 0, 0, 0.05);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    }
     </style>
 """, unsafe_allow_html=True)
 
 # -----------------------------
-# 🧠 Session State Initialization
+# Session State Initialization
 # -----------------------------
 if 'last_ticker' not in st.session_state:
     st.session_state.last_ticker = None
@@ -34,7 +44,7 @@ st.markdown("<h4 style='text-align: center;'>Where Game Theory & Stock Options C
 st.markdown("---")
 
 # -----------------------------
-# 📦 Curved Glass Form Container
+# 📦 Form Section
 # -----------------------------
 st.markdown("<div class='glass-form'>", unsafe_allow_html=True)
 
@@ -72,7 +82,7 @@ with st.form("input_form"):
 st.markdown("</div>", unsafe_allow_html=True)
 
 # -----------------------------
-# 💹 Strategy Logic
+# 📈 Run the Strategy
 # -----------------------------
 if submit:
     st.markdown("---")
@@ -81,9 +91,10 @@ if submit:
     current_price = history['Close'].iloc[-1]
     st.write(f"📌 Current Stock Price: **${current_price:.2f}**")
 
+    # Moving Averages
     ma_5 = history['Close'].rolling(window=5).mean().iloc[-1]
     ma_10 = history['Close'].rolling(window=10).mean().iloc[-1]
-    ma_50 = history['Close'].rolling(window=50).mean().iloc[-1]
+    ma_75 = history['Close'].rolling(window=75).mean().iloc[-1]
     ma_200 = history['Close'].rolling(window=200).mean().iloc[-1]
 
     st.markdown(
@@ -92,25 +103,42 @@ if submit:
         📊 <strong>Moving Averages:</strong>
         <strong>5D</strong>: ${ma_5:.2f}, 
         <strong>10D</strong>: ${ma_10:.2f}, 
-        <strong>50D</strong>: ${ma_50:.2f}, 
+        <strong>75D</strong>: ${ma_75:.2f}, 
         <strong>200D</strong>: ${ma_200:.2f}
         </p>
         """,
         unsafe_allow_html=True
     )
 
-    if current_price > max(ma_5, ma_10, ma_50, ma_200):
+    # --- Dynamic Weighted Trend Logic ---
+    expiry_date = datetime.datetime.strptime(st.session_state.exp_date, "%Y-%m-%d")
+    days_to_expiry = (expiry_date - datetime.datetime.today()).days
+
+    if days_to_expiry <= 21:  # Short-term
+        w5, w10, w75, w200 = 2, 2, 1, 0
+    elif days_to_expiry <= 60:  # Medium-term
+        w5, w10, w75, w200 = 2, 2, 2, 1
+    else:  # Long-term
+        w5, w10, w75, w200 = 2, 2, 3, 1
+
+    trend_score = 0
+    if current_price > ma_5: trend_score += w5
+    if current_price > ma_10: trend_score += w10
+    if current_price > ma_75: trend_score += w75
+    if current_price > ma_200: trend_score += w200
+
+    if trend_score >= 6:
         trend = "Uptrend"
-    elif current_price < min(ma_5, ma_10, ma_50, ma_200):
+    elif trend_score <= 2:
         trend = "Downtrend"
     else:
         trend = "Sideways"
 
     st.write(f"📊 Detected Trend: **{trend}**")
 
+    # Volatility & Probabilities
     history['Return'] = history['Close'].pct_change()
     volatility = history['Return'].std()
-    days_to_expiry = (datetime.datetime.strptime(st.session_state.exp_date, "%Y-%m-%d") - datetime.datetime.today()).days
 
     if volatility == 0 or days_to_expiry <= 0:
         st.error("⚠️ Not enough volatility data or invalid expiration.")
