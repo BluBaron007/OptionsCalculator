@@ -13,7 +13,16 @@ st.markdown("""
     html, body, .stApp {
         background-color: #F8F8FF !important;
     }
-    
+    .glass-form {
+        background: rgba(255, 255, 255, 0.55);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-radius: 30px;
+        padding: 35px 25px;
+        margin-top: 20px;
+        border: 1.5px solid rgba(0, 0, 0, 0.05);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -53,22 +62,28 @@ with st.form("input_form"):
     percent_down = st.number_input("Stock Move Down (%)", min_value=1, value=10)
 
     submit = False
+    show_submit = True
 
     try:
         stock = yf.Ticker(ticker)
         expirations = stock.options
-        st.session_state.exp_date = st.selectbox("Select Expiration Date", expirations, index=expirations.index(st.session_state.exp_date) if st.session_state.exp_date in expirations else 0)
 
-        options_chain = stock.option_chain(st.session_state.exp_date)
-        calls = options_chain.calls[['strike', 'lastPrice']]
-        puts = options_chain.puts[['strike', 'lastPrice']]
-        available_strikes = sorted(list(set(calls['strike']).intersection(set(puts['strike']))))
+        if len(expirations) == 0:
+            st.warning("⚠️ No expiration dates found. Invalid or illiquid ticker.")
+            show_submit = False
+        else:
+            st.session_state.exp_date = st.selectbox("Select Expiration Date", expirations, index=expirations.index(st.session_state.exp_date) if st.session_state.exp_date in expirations else 0)
+            options_chain = stock.option_chain(st.session_state.exp_date)
+            calls = options_chain.calls[['strike', 'lastPrice']]
+            puts = options_chain.puts[['strike', 'lastPrice']]
+            available_strikes = sorted(list(set(calls['strike']).intersection(set(puts['strike']))))
 
-        st.session_state.strike = st.selectbox("Select Strike Price", available_strikes, index=available_strikes.index(st.session_state.strike) if st.session_state.strike in available_strikes else 0)
-
-        submit = st.form_submit_button("Run Strategy Analysis")
-    except Exception as e:
+            st.session_state.strike = st.selectbox("Select Strike Price", available_strikes, index=available_strikes.index(st.session_state.strike) if st.session_state.strike in available_strikes else 0)
+    except Exception:
         st.warning("⚠️ Waiting for a valid ticker...")
+
+    if show_submit:
+        submit = st.form_submit_button("Run Strategy Analysis")
 
 st.markdown("</div>", unsafe_allow_html=True)
 
