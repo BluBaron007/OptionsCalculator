@@ -32,7 +32,7 @@ if 'strike' not in st.session_state:
 st.markdown("""
     <div style='text-align: center;'>
         <img src='https://raw.githubusercontent.com/BluBaron007/OptionsCalculator/main/strikely_logo.png' width='500' style='margin-bottom: 6px;'/>
-        <h4 style='margin-top: 4px;'>Where Game Theory & Stock Options Collide</h4>
+        <h2 style='margin-top: 4px;'>Where Game Theory & Stock Options Collide</h2>
     </div>
     <hr>
 """, unsafe_allow_html=True)
