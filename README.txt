@@ -1,6 +1,6 @@
-# Options Strategy Predictor
+Introducing Strikely
 
-A professional-grade web application for modeling and evaluating options strategies using live market data. This tool is designed for traders, analysts, and portfolio managers seeking robust decision-support for options trades.
+The professional-grade web application for modeling and evaluating options strategies using live market data. This tool is designed for traders, analysts, and portfolio managers seeking robust decision-support for options trades.
 
 ---
 
