@@ -27,11 +27,11 @@ if 'strike' not in st.session_state:
     st.session_state.strike = None
 
 # -----------------------------
-# 🔷 Logo + Header (Centered)
+# 🔷 Logo + Header (Centered w/ GitHub-hosted image)
 # -----------------------------
 st.markdown("""
     <div style='text-align: center;'>
-        <img src='images/strikely_logo.png' width='60' style='margin-bottom: 10px;'/>
+        <img src='https://raw.githubusercontent.com/BluBaron007/OptionsCalculator/main/strikely_logo.png' width='60' style='margin-bottom: 10px;'/>
         <h1 style='margin: 0;'>Strikely</h1>
         <h4 style='margin-top: 4px;'>Where Game Theory & Stock Options Collide</h4>
     </div>
@@ -217,7 +217,7 @@ if submit:
         st.write(f"🎯 Expected Value: **{best_ev_strategy}** (${ev[np.argmax(ev)]:.2f})")
 
 # -----------------------------
-# ⚠️ Disclaimer (Faded)
+# ⚠️ Disclaimer (Soft Gray)
 # -----------------------------
 st.markdown("""
 <hr>
