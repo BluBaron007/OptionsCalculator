@@ -9,11 +9,11 @@ import datetime
 # 🔧 CSS for Background
 # -----------------------------
 st.markdown("""
-    <div style='text-align: center;'>
-        <img src='https://raw.githubusercontent.com/BluBaron007/OptionsCalculator/main/strikely_logo.png' width='100' style='margin-bottom: 6px;'/>
-        <h4 style='margin-top: 4px;'>Where Game Theory & Stock Options Collide</h4>
-    </div>
-    <hr>
+    <style>
+    html, body, .stApp {
+        background-color: #F8F8FF !important;
+    }
+    </style>
 """, unsafe_allow_html=True)
 
 # -----------------------------
@@ -27,12 +27,11 @@ if 'strike' not in st.session_state:
     st.session_state.strike = None
 
 # -----------------------------
-# 🔷 Logo + Header (Centered w/ GitHub-hosted image)
+# 🔷 Logo-Only Header (Centered + Large)
 # -----------------------------
 st.markdown("""
     <div style='text-align: center;'>
-        <img src='https://raw.githubusercontent.com/BluBaron007/OptionsCalculator/main/strikely_logo.png' width='60' style='margin-bottom: 10px;'/>
-        <h1 style='margin: 0;'>Strikely</h1>
+        <img src='https://raw.githubusercontent.com/BluBaron007/OptionsCalculator/main/strikely_logo.png' width='150' style='margin-bottom: 6px;'/>
         <h4 style='margin-top: 4px;'>Where Game Theory & Stock Options Collide</h4>
     </div>
     <hr>
