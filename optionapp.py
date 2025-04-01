@@ -6,7 +6,7 @@ from scipy.stats import norm
 import datetime
 
 # -----------------------------
-# 🔧 CSS for Aqua Background + Glass Form
+# 🔧 CSS for Background & Glass Form
 # -----------------------------
 st.markdown("""
     <style>
@@ -27,11 +27,16 @@ if 'strike' not in st.session_state:
     st.session_state.strike = None
 
 # -----------------------------
-# App Header
+# Logo in Header Line
 # -----------------------------
-st.markdown("<h1 style='text-align: center;'>Strikely</h1>", unsafe_allow_html=True)
-st.markdown("<h4 style='text-align: center;'>Where Game Theory & Stock Options Collide</h4>", unsafe_allow_html=True)
-st.markdown("---")
+st.markdown("""
+    <div style='text-align: center; display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: -10px;'>
+        <img src='images/strikely_logo.png' width='50' style='margin-bottom: 0;'/>
+        <h1 style='margin-bottom: 0;'>Strikely</h1>
+    </div>
+    <h4 style='text-align: center; margin-top: 0;'>Where Game Theory & Stock Options Collide</h4>
+    <hr>
+""", unsafe_allow_html=True)
 
 # -----------------------------
 # 📦 Form Section
