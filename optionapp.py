@@ -29,7 +29,7 @@ if 'strike' not in st.session_state:
 # -----------------------------
 # App Header
 # -----------------------------
-st.markdown("<h1 style='text-align: center;'>Options Strategy Predictor</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center;'>Strikely</h1>", unsafe_allow_html=True)
 st.markdown("<h4 style='text-align: center;'>Where Game Theory & Stock Options Collide</h4>", unsafe_allow_html=True)
 st.markdown("---")
 
