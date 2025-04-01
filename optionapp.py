@@ -15,7 +15,6 @@ st.markdown("""
     </div>
     <hr>
 """, unsafe_allow_html=True)
-)
 
 # -----------------------------
 # Session State Initialization
