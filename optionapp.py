@@ -6,7 +6,7 @@ from scipy.stats import norm
 import datetime
 
 # -----------------------------
-# 🔧 CSS for Background & Glass Form
+# 🔧 CSS for Background
 # -----------------------------
 st.markdown("""
     <style>
@@ -27,14 +27,14 @@ if 'strike' not in st.session_state:
     st.session_state.strike = None
 
 # -----------------------------
-# Logo in Header Line
+# 🔷 Logo + Header (Centered)
 # -----------------------------
 st.markdown("""
-    <div style='text-align: center; display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: -10px;'>
-        <img src='images/strikely_logo.png' width='50' style='margin-bottom: 0;'/>
-        <h1 style='margin-bottom: 0;'>Strikely</h1>
+    <div style='text-align: center;'>
+        <img src='images/strikely_logo.png' width='60' style='margin-bottom: 10px;'/>
+        <h1 style='margin: 0;'>Strikely</h1>
+        <h4 style='margin-top: 4px;'>Where Game Theory & Stock Options Collide</h4>
     </div>
-    <h4 style='text-align: center; margin-top: 0;'>Where Game Theory & Stock Options Collide</h4>
     <hr>
 """, unsafe_allow_html=True)
 
@@ -215,3 +215,13 @@ if submit:
 
         st.write(f"🛡 Minimax: **{minimax_strategy}** (${minimax:.2f})")
         st.write(f"🎯 Expected Value: **{best_ev_strategy}** (${ev[np.argmax(ev)]:.2f})")
+
+# -----------------------------
+# ⚠️ Disclaimer (Faded)
+# -----------------------------
+st.markdown("""
+<hr>
+<p style='font-size: 0.85em; color: #999999; text-align: center;'>
+<b>Disclaimer:</b> This tool is for informational and educational purposes only. It does not constitute financial advice, investment recommendations, or a guarantee of future performance. Trading options involves risk, and users should consult a licensed financial advisor before making any trading decisions.
+</p>
+""", unsafe_allow_html=True)
