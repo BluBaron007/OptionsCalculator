@@ -9,12 +9,13 @@ import datetime
 # 🔧 CSS for Background
 # -----------------------------
 st.markdown("""
-    <style>
-    html, body, .stApp {
-        background-color: #F8F8FF !important;
-    }
-    </style>
+    <div style='text-align: center;'>
+        <img src='https://raw.githubusercontent.com/BluBaron007/OptionsCalculator/main/strikely_logo.png' width='100' style='margin-bottom: 6px;'/>
+        <h4 style='margin-top: 4px;'>Where Game Theory & Stock Options Collide</h4>
+    </div>
+    <hr>
 """, unsafe_allow_html=True)
+)
 
 # -----------------------------
 # Session State Initialization
