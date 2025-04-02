@@ -27,15 +27,16 @@ if 'strike' not in st.session_state:
     st.session_state.strike = None
 
 # -----------------------------
-# 🔷 Logo-Only Header (Centered + Large)
+# 🧊 Logo Only (Centered, Transparent, Clean)
 # -----------------------------
 st.markdown("""
     <div style='text-align: center;'>
-        <img src='https://raw.githubusercontent.com/BluBaron007/OptionsCalculator/main/strikely_logo.png' width='500' style='margin-bottom: 0px;'/>
+        <img src='https://raw.githubusercontent.com/BluBaron007/OptionsCalculator/main/strikely_logo_clean.png' width='100' style='margin-bottom: 0px;'/>
         <h4 style='margin-top: 0px;'>Where Game Theory & Stock Options Collide</h4>
     </div>
     <hr>
 """, unsafe_allow_html=True)
+
 
 # -----------------------------
 # 📦 Form Section
@@ -110,15 +111,15 @@ if submit:
         unsafe_allow_html=True
     )
 
-    # --- Dynamic Weighted Trend Logic ---
+    # --- Trend Logic ---
     expiry_date = datetime.datetime.strptime(st.session_state.exp_date, "%Y-%m-%d")
     days_to_expiry = (expiry_date - datetime.datetime.today()).days
 
-    if days_to_expiry <= 21:  # Short-term
+    if days_to_expiry <= 21:
         w5, w10, w75, w200 = 2, 2, 1, 0
-    elif days_to_expiry <= 60:  # Medium-term
+    elif days_to_expiry <= 60:
         w5, w10, w75, w200 = 2, 2, 2, 1
-    else:  # Long-term
+    else:
         w5, w10, w75, w200 = 2, 2, 3, 1
 
     trend_score = 0
