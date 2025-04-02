@@ -107,7 +107,7 @@ if submit:
 
     # --- Trend Logic ---
     eexpiry_date = datetime.datetime.strptime(st.session_state.exp_date, "%Y-%m-%d")
-time_diff = expiry_date - datetime.datetime.now()
+time_diff = expiry_date - datetime.now()
 days_to_expiry = max(time_diff.total_seconds() / 86400, 0.01)  # never zero
 
 # ⚠️ Optional: Display warning for same-day expirations
