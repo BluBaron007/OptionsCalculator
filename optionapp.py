@@ -36,42 +36,54 @@ st.markdown("""
     </div>
     <hr>
 """, unsafe_allow_html=True)
-
 # -----------------------------
 # 📦 Form Section
 # -----------------------------
 with st.form("input_form"):
     st.subheader("Input Parameters")
+    
+    # User Inputs
     ticker = st.text_input("Stock Ticker", "AAPL").upper()
-
-    if ticker != st.session_state.last_ticker:
-        st.session_state.last_ticker = ticker
-        st.session_state.exp_date = None
-        st.session_state.strike = None
-
     num_contracts = st.number_input("Number of Contracts", min_value=1, value=1)
     percent_up = st.number_input("Stock Move Up (%)", min_value=1, value=10)
     percent_down = st.number_input("Stock Move Down (%)", min_value=1, value=10)
 
-    submit = False
-    show_submit = True
+    # Always Show Submit Button
+    submit = st.form_submit_button("Run Strategy Analysis")
 
+# -----------------------------
+# 🎯 Post-Submission Logic
+# -----------------------------
+if submit:
     try:
         stock = yf.Ticker(ticker)
         expirations = stock.options
 
-        if len(expirations) == 0:
-            st.warning("⚠️ No expiration dates found. Invalid or illiquid ticker.")
-            show_submit = False
+        if not expirations:
+            st.warning("⚠️ No expiration dates found. Please check your ticker.")
         else:
-            st.session_state.exp_date = st.selectbox("Select Expiration Date", expirations, index=expirations.index(st.session_state.exp_date) if st.session_state.exp_date in expirations else 0)
+            # Expiration Date Dropdown
+            st.session_state.exp_date = st.selectbox(
+                "Select Expiration Date", 
+                expirations, 
+                index=expirations.index(st.session_state.exp_date) if st.session_state.exp_date in expirations else 0
+            )
+
+            # Options Chain & Strike Price Dropdown
             options_chain = stock.option_chain(st.session_state.exp_date)
+            calls = options_chain.calls[['strike', 'lastPrice', 'impliedVolatility']]
             puts = options_chain.puts[['strike', 'lastPrice']]
             available_strikes = sorted(list(set(calls['strike']).intersection(set(puts['strike']))))
 
-            st.session_state.strike = st.selectbox("Select Strike Price", available_strikes, index=available_strikes.index(st.session_state.strike) if st.session_state.strike in available_strikes else 0)
-    except Exception:
-        st.warning("⚠️ Waiting for a valid ticker...")
+            st.session_state.strike = st.selectbox(
+                "Select Strike Price",
+                available_strikes,
+                index=available_strikes.index(st.session_state.strike) if st.session_state.strike in available_strikes else 0
+            )
+
+
+    except Exception as e:
+        st.error(f"Error fetching data for {ticker}: {e}")
 
     if show_submit:
         submit = st.form_submit_button("Run Strategy Analysis")
@@ -106,7 +118,7 @@ if submit:
 
     # --- Trend Logic ---
     expiry_date = datetime.datetime.strptime(st.session_state.exp_date, "%Y-%m-%d")
-    time_diff = expiry_date - datetime.now()
+    time_diff = expiry_date - datetime.datetime.now()
     days_to_expiry = max(time_diff.total_seconds() / 86400, 0.01)
 
     if days_to_expiry < 1:
@@ -134,6 +146,10 @@ if submit:
         trend = "Sideways"
 
     st.write(f"📊 Detected Trend: **{trend}**")
+
+    # (Your volatility, VIX, probabilities, matrix, and strategy logic go here)
+
+
 
     # -----------------------------
     # 🔥 Implied Volatility & VIX
