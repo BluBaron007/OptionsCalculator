@@ -106,13 +106,12 @@ if submit:
         """, unsafe_allow_html=True)
 
     # --- Trend Logic ---
-    eexpiry_date = datetime.datetime.strptime(st.session_state.exp_date, "%Y-%m-%d")
-time_diff = expiry_date - datetime.now()
-days_to_expiry = max(time_diff.total_seconds() / 86400, 0.01)  # never zero
+    expiry_date = datetime.strptime(st.session_state.exp_date, "%Y-%m-%d")
+    time_diff = expiry_date - datetime.now()
+    days_to_expiry = max(time_diff.total_seconds() / 86400, 0.01)
 
-# ⚠️ Optional: Display warning for same-day expirations
-if days_to_expiry < 1:
-    st.warning("⚠️ Same-day expiration: results may be highly volatile.")
+    if days_to_expiry < 1:
+        st.warning("⚠️ Same-day expiration: results may be highly volatile.")
 
     if days_to_expiry <= 21:
         w5, w10, w75, w200 = 2, 2, 1, 0
@@ -137,23 +136,18 @@ if days_to_expiry < 1:
 
     st.write(f"📊 Detected Trend: **{trend}**")
 
-    # -----------------------------
     # 🔥 Implied Volatility & VIX
-    # -----------------------------
     atm_call = calls.iloc[(calls['strike'] - current_price).abs().argsort()[:1]]
     iv = atm_call['impliedVolatility'].values[0]
     annual_vol = iv
     daily_vol = annual_vol / np.sqrt(252)
 
-    # Pull VIX
     try:
         vix = yf.Ticker("^VIX").history(period="1d")['Close'].iloc[-1]
     except:
-        vix = 20  # fallback average
+        vix = 20
 
-    # -----------------------------
-    # 🎲 Scenario Probabilities
-    # -----------------------------
+    # 🎲 Probabilities
     z_up = (percent_up / 100) / (daily_vol * np.sqrt(days_to_expiry))
     z_down = (-percent_down / 100) / (daily_vol * np.sqrt(days_to_expiry))
 
@@ -161,7 +155,6 @@ if days_to_expiry < 1:
     prob_down = norm.cdf(z_down)
     prob_flat = 1 - (prob_up + prob_down)
 
-    # Trend Adjustment
     if trend == "Uptrend":
         prob_up *= 1.10
         prob_down *= 0.90
@@ -171,13 +164,11 @@ if days_to_expiry < 1:
     else:
         prob_flat *= 1.10
 
-    # VIX Adjustment
     if vix > 25:
         prob_down *= 1.05
     elif vix < 15:
         prob_up *= 1.05
 
-    # Normalize
     total = prob_up + prob_down + prob_flat
     prob_up /= total
     prob_down /= total
@@ -187,8 +178,54 @@ if days_to_expiry < 1:
     st.write(f"• Stock Up > +{percent_up}%: **{prob_up:.2%}**")
     st.write(f"• Stock Down > -{percent_down}%: **{prob_down:.2%}**")
     st.write(f"• Flat (within range): **{prob_flat:.2%}**")
-
     # Add rest of the payoff matrix and recommendation logic below as usual...
+
+# 💰 Payoff Matrix + Strategy Logic
+# -----------------------------
+strategies = ['Buy Call', 'Buy Put', 'Write Call', 'Write Put']
+scenarios = [f'Up {percent_up}%', f'Down {percent_down}%', 'Flat']
+matrix = []
+
+for strat in strategies:
+    row = []
+    for s in scenarios:
+        if 'Up' in s:
+            price = st.session_state.strike * (1 + percent_up / 100)
+        elif 'Down' in s:
+            price = st.session_state.strike * (1 - percent_down / 100)
+        else:
+            price = st.session_state.strike
+
+        call_price = calls[calls['strike'] == st.session_state.strike]['lastPrice'].values[0]
+        put_price = puts[puts['strike'] == st.session_state.strike]['lastPrice'].values[0]
+
+        if strat == 'Buy Call':
+            payoff = (max(0, price - st.session_state.strike) - call_price) * 100 * num_contracts
+        elif strat == 'Buy Put':
+            payoff = (max(0, st.session_state.strike - price) - put_price) * 100 * num_contracts
+        elif strat == 'Write Call':
+            payoff = (call_price - max(0, price - st.session_state.strike)) * 100 * num_contracts
+        elif strat == 'Write Put':
+            payoff = (put_price - max(0, st.session_state.strike - price)) * 100 * num_contracts
+
+        row.append(round(payoff, 2))
+    matrix.append(row)
+
+df = pd.DataFrame(matrix, index=strategies, columns=scenarios)
+st.subheader("Payoff Matrix")
+st.dataframe(df)
+
+# Strategy Recommendations
+st.subheader("📌 Strategy Recommendations")
+row_mins = np.min(matrix, axis=1)
+minimax = np.max(row_mins)
+minimax_strategy = strategies[np.argmax(row_mins)]
+
+ev = np.dot(matrix, [prob_up, prob_down, prob_flat])
+best_ev_strategy = strategies[np.argmax(ev)]
+
+st.write(f"🛡 Minimax: **{minimax_strategy}** (${minimax:.2f})")
+st.write(f"🎯 Expected Value: **{best_ev_strategy}** (${ev[np.argmax(ev)]:.2f})")
 
 # -----------------------------
 # ⚠️ Disclaimer (Soft Gray)
