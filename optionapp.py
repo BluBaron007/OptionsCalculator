@@ -1,4 +1,3 @@
-
 import streamlit as st
 import yfinance as yf
 import numpy as np
@@ -32,11 +31,12 @@ if 'strike' not in st.session_state:
 # -----------------------------
 st.markdown("""
     <div style='text-align: center;'>
-        <img src='https://raw.githubusercontent.com/BluBaron007/OptionsCalculator/main/strikely_logo_clean.png' width='400' style='margin-bottom: 0px;'/>
-        <h4 style='margin-top: -50px;'>Where Game Theory & Stock Options Collide</h4>
+        <img src='https://raw.githubusercontent.com/BluBaron007/OptionsCalculator/main/strikely_logo_clean.png' width='100' style='margin-bottom: 0px;'/>
+        <h4 style='margin-top: -4px;'>Where Game Theory & Stock Options Collide</h4>
     </div>
     <hr>
 """, unsafe_allow_html=True)
+
 
 # -----------------------------
 # 📦 Form Section
