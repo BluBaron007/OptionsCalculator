@@ -32,7 +32,7 @@ if 'strike' not in st.session_state:
 st.markdown("""
     <div style='text-align: center;'>
         <img src='https://raw.githubusercontent.com/BluBaron007/OptionsCalculator/main/strikely_logo_clean.png' width='400' style='margin-bottom: 0px;'/>
-        <h4 style='margin-top: -4px;'>Where Game Theory & Stock Options Collide</h4>
+        <h4 style='margin-top: -10px;'>Where Game Theory & Stock Options Collide</h4>
     </div>
     <hr>
 """, unsafe_allow_html=True)
@@ -147,7 +147,6 @@ if submit:
         vix = yf.Ticker("^VIX").history(period="1d")['Close'].iloc[-1]
     except:
         vix = 20  # fallback average
-    
     # 🎯 Z-score Calculations
     z_up = (percent_up / 100) / (daily_vol * np.sqrt(days_to_expiry))
     z_down = (-percent_down / 100) / (daily_vol * np.sqrt(days_to_expiry))
@@ -166,7 +165,12 @@ if submit:
     else:
         prob_flat *= 1.10
     
-    # 💹 VIX Adjustment
+    # 📈 VIX Adjustment
+    try:
+        vix = yf.Ticker("^VIX").history(period="1d")['Close'].iloc[-1]
+    except:
+        vix = 20  # fallback
+    
     if vix > 25:
         prob_down *= 1.05
     elif vix < 15:
@@ -182,8 +186,54 @@ if submit:
     st.write(f"• Stock Up > +{percent_up}%: **{prob_up:.2%}**")
     st.write(f"• Stock Down > -{percent_down}%: **{prob_down:.2%}**")
     st.write(f"• Flat (within range): **{prob_flat:.2%}**")
+    
+    # 💰 Payoff Matrix + Strategy Logic 
+    strategies = ['Buy Call', 'Buy Put', 'Write Call', 'Write Put']
+    str = ['Buy Call', 'Buy Put', 'Write Call', 'Write Put']
+    scenarios = [f'Up {percent_up}%', f'Down {percent_down}%', 'Flat']
+    matrix = []
 
-    # Add rest of the payoff matrix and recommendation logic below as usual...
+    for strat in strategies:
+        row = []
+        for s in scenarios:
+            if 'Up' in s:
+                price = st.session_state.strike * (1 + percent_up / 100)
+            elif 'Down' in s:
+                price = st.session_state.strike * (1 - percent_down / 100)
+            else:
+                price = st.session_state.strike
+
+            call_price = calls[calls['strike'] == st.session_state.strike]['lastPrice'].values[0]
+            put_price = puts[puts['strike'] == st.session_state.strike]['lastPrice'].values[0]
+
+            if strat == 'Buy Call':
+                payoff = (max(0, price - st.session_state.strike) - call_price) * 100 * num_contracts
+            elif strat == 'Buy Put':
+                payoff = (max(0, st.session_state.strike - price) - put_price) * 100 * num_contracts
+            elif strat == 'Write Call':
+                payoff = (call_price - max(0, price - st.session_state.strike)) * 100 * num_contracts
+            elif strat == 'Write Put':
+                payoff = (put_price - max(0, st.session_state.strike - price)) * 100 * num_contracts
+
+            row.append(round(payoff, 2))
+        matrix.append(row)
+
+    df = pd.DataFrame(matrix, index=strategies, columns=scenarios)
+    st.subheader("Payoff Matrix")
+    st.dataframe(df)
+
+    st.subheader("📌 Strategy Recommendations")
+    row_mins = np.min(matrix, axis=1)
+    minimax = np.max(row_mins)
+    minimax_strategy = strategies[np.argmax(row_mins)]
+
+    matrix_np = np.array(matrix)
+    ev = np.dot(matrix_np, [prob_up, prob_down, prob_flat])
+    best_ev_strategy = strategies[np.argmax(ev)]
+
+    st.write(f"🛡 Minimax: **{minimax_strategy}** (${minimax:.2f})")
+    st.write(f"🎯 Expected Value: **{best_ev_strategy}** (${ev[np.argmax(ev)]:.2f})")
+
 
 # -----------------------------
 # ⚠️ Disclaimer (Soft Gray)
