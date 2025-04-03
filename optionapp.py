@@ -6,150 +6,13 @@ from scipy.stats import norm
 import datetime
 
 # -----------------------------
-# 🔧 CSS for Minimal Design
+# 🔧 CSS for Background and Responsive Design
 # -----------------------------
 st.markdown("""
     <style>
-    /* Clean, minimal background */
+    /* Base background */
     html, body, .stApp {
-        background-color: #f8f9fa !important;
-    }
-    
-    /* Remove default streamlit bottom decoration and padding */
-    .main .block-container {
-        padding-bottom: 0 !important;
-        max-width: 100% !important;
-    }
-    
-    footer {
-        display: none !important;
-    }
-    
-    /* Simple card effect */
-    .card-container {
-        background-color: white;
-        border-radius: 6px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        padding: 1.5rem;
-        margin-bottom: 1rem;
-    }
-    
-    /* Clean form elements */
-    .stTextInput > div > div > input,
-    .stNumberInput > div > div > input,
-    .stSelectbox > div > div > div {
-        border-radius: 4px;
-        border: 1px solid #dee2e6;
-    }
-    
-    /* Button styling */
-    .stButton > button {
-        background-color: #4568dc;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        transition: background-color 0.2s;
-    }
-    
-    .stButton > button:hover {
-        background-color: #3a56b4;
-    }
-    
-    /* Subheader styling */
-    h2, h3, .stSubheader {
-        color: #343a40;
-        font-weight: 500;
-    }
-    
-    /* Table styling */
-    .dataframe {
-        border: none !important;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    }
-    
-    .dataframe th {
-        background-color: #f1f3f5;
-        color: #495057;
-    }
-    
-    /* Responsive design adjustments */
-    @media screen and (max-width: 768px) {
-        .block-container {
-            padding-left: 1rem !important;
-            padding-right: 1rem !important;
-            padding-top: 1rem !important;
-        }
-        
-        .stTextInput, .stNumberInput, .stSelectbox, .stButton {
-            width: 100% !important;
-        }
-        
-        h1 { font-size: 1.5rem !important; }
-        h2 { font-size: 1.3rem !important; }
-        h3 { font-size: 1.1rem !important; }
-        
-        .dataframe {
-            font-size: 0.8rem !important;
-            overflow-x: auto !important;
-        }
-    }
-    </style>
-""", unsafe_allow_html=True)
-    
-    /* Button styling */
-    .stButton > button {
-        background: linear-gradient(45deg, #4568dc, #3f5efb) !important;
-        color: white !important;
-        border: none !important;
-        border-radius: 6px !important;
-        padding: 10px 24px !important;
-        transition: all 0.3s ease !important;
-    }
-    
-    .stButton > button:hover {
-        transform: translateY(-2px) !important;
-        box-shadow: 0 5px 15px rgba(63, 94, 251, 0.4) !important;
-    }
-    
-    /* Input field styling */
-    .stTextInput > div > div > input,
-    .stNumberInput > div > div > input,
-    .stSelectbox > div > div > div {
-        border-radius: 6px !important;
-        border: 1px solid rgba(173, 216, 230, 0.5) !important;
-        padding: 10px 15px !important;
-        background-color: rgba(255, 255, 255, 0.7) !important;
-    }
-    
-    /* Subheader styling */
-    h2, h3, .stSubheader {
-        color: #1e3a8a !important;
-        font-weight: 600 !important;
-    }
-    
-    /* Table styling */
-    .dataframe {
-        border-radius: 10px !important;
-        overflow: hidden !important;
-        border: none !important;
-        background-color: rgba(255, 255, 255, 0.7) !important;
-    }
-    
-    .dataframe th {
-        background-color: rgba(63, 94, 251, 0.1) !important;
-        color: #1e3a8a !important;
-    }
-    
-    /* Result sections */
-    [data-testid="stVerticalBlock"] > div {
-        background: rgba(255, 255, 255, 0.65) !important;
-        backdrop-filter: blur(8px) !important;
-        -webkit-backdrop-filter: blur(8px) !important;
-        border-radius: 10px !important;
-        padding: 10px 15px !important;
-        margin-bottom: 15px !important;
-        border: 1px solid rgba(255, 255, 255, 0.18) !important;
-        box-shadow: 0 4px 15px 0 rgba(31, 38, 135, 0.1) !important;
+        background-color: #F8F8FF !important;
     }
     
     /* Responsive design adjustments */
@@ -197,23 +60,23 @@ if 'strike' not in st.session_state:
     st.session_state.strike = None
 
 # -----------------------------
-# 🧊 Logo - Minimal Style
+# 🧊 Logo Only (Centered, Transparent, Clean, Responsive)
 # -----------------------------
 st.markdown("""
-    <div style='text-align: center; margin-bottom: 30px;'>
-        <h1 style='font-family: Arial, sans-serif; color: #343a40; font-weight: 500; margin-bottom: 0;'>
-            <span style='color: #4568dc;'>Strikely</span>.ai
-        </h1>
+    <div style='text-align: center;'>
+        <img src='https://raw.githubusercontent.com/BluBaron007/OptionsCalculator/main/strikely_logo_clean.png' 
+             style='max-width: 500px; width: 90%; margin-bottom: -80px;'/>
     </div>
+    <hr>
 """, unsafe_allow_html=True)
 
 # -----------------------------
 # 📦 Form Section
 # -----------------------------
-st.markdown("<div class='card-container'>", unsafe_allow_html=True)
+st.markdown("<div class='glass-form'>", unsafe_allow_html=True)
 
 with st.form("input_form"):
-    st.subheader("INPUT PARAMETERS")
+    st.subheader("Input Parameters")
     
     # Use columns for better space utilization on both desktop and mobile
     col1, col2 = st.columns([1, 1])
@@ -254,7 +117,7 @@ with st.form("input_form"):
         st.warning("⚠️ Waiting for a valid ticker...")
 
     if show_submit:
-        submit = st.form_submit_button("RUN ANALYSIS")
+        submit = st.form_submit_button("Run Strategy Analysis")
 
 st.markdown("</div>", unsafe_allow_html=True)
 
@@ -263,32 +126,10 @@ st.markdown("</div>", unsafe_allow_html=True)
 # -----------------------------
 if submit:
     st.markdown("---")
-    
-    # Create a terminal card container for results section
-    st.markdown("""
-        <div class="card-container">
-    """, unsafe_allow_html=True)
-    
-    st.subheader("MARKET SNAPSHOT")
+    st.subheader("Market Snapshot")
     history = stock.history(period="250d")
     current_price = history['Close'].iloc[-1]
-    
-    # Change to terminal style with colored values
-    change_pct = ((current_price - history['Close'].iloc[-2]) / history['Close'].iloc[-2]) * 100
-    if change_pct > 0:
-        change_class = "positive"
-        change_sign = "+"
-    else:
-        change_class = "negative"
-        change_sign = ""
-        
-    st.markdown(f"""
-        <div style='font-family: Consolas, monospace;'>
-            <span style='color: #8fcaff;'>TICKER:</span> {ticker} | 
-            <span style='color: #8fcaff;'>PRICE:</span> ${current_price:.2f} | 
-            <span style='color: #8fcaff;'>CHANGE:</span> <span class='{change_class}'>{change_sign}{change_pct:.2f}%</span>
-        </div>
-    """, unsafe_allow_html=True)
+    st.write(f"📌 Current Stock Price: **${current_price:.2f}**")
 
     # Moving Averages
     ma_5 = history['Close'].rolling(window=5).mean().iloc[-1]
@@ -298,13 +139,13 @@ if submit:
 
     st.markdown(
         f"""
-        <div style='font-family: Consolas, monospace; margin: 10px 0;'>
-        <span style='color: #8fcaff;'>MA:</span>
-        <span style='color: #f0f0f0;'>5D=${ma_5:.2f}</span> | 
-        <span style='color: #f0f0f0;'>10D=${ma_10:.2f}</span> | 
-        <span style='color: #f0f0f0;'>75D=${ma_75:.2f}</span> | 
-        <span style='color: #f0f0f0;'>200D=${ma_200:.2f}</span>
-        </div>
+        <p style='text-align: center; overflow-x: auto; white-space: nowrap;'>
+        📊 <strong>Moving Averages:</strong>
+        <strong>5D</strong>: ${ma_5:.2f}, 
+        <strong>10D</strong>: ${ma_10:.2f}, 
+        <strong>75D</strong>: ${ma_75:.2f}, 
+        <strong>200D</strong>: ${ma_200:.2f}
+        </p>
         """,
         unsafe_allow_html=True
     )
@@ -327,20 +168,13 @@ if submit:
     if current_price > ma_200: trend_score += w200
 
     if trend_score >= 6:
-        trend = "UPTREND"
-        trend_class = "positive"
+        trend = "Uptrend"
     elif trend_score <= 2:
-        trend = "DOWNTREND"
-        trend_class = "negative"
+        trend = "Downtrend"
     else:
-        trend = "SIDEWAYS"
-        trend_class = ""
+        trend = "Sideways"
 
-    st.markdown(f"""
-        <div style='font-family: Consolas, monospace; margin: 10px 0;'>
-            <span style='color: #8fcaff;'>TREND:</span> <span class='{trend_class}'>{trend}</span> [SCORE: {trend_score}/8]
-        </div>
-    """, unsafe_allow_html=True)
+    st.write(f"📊 Detected Trend: **{trend}**")
 
     # Volatility & Probabilities
     history['Return'] = history['Close'].pct_change()
@@ -371,33 +205,10 @@ if submit:
         prob_down /= total
         prob_flat /= total
 
-        st.subheader("SCENARIO PROBABILITIES")
-        
-        # Terminal-style table header
-        st.markdown(f"""
-            <div style='font-family: Consolas, monospace; margin: 10px 0;'>
-                <span style='color: #8fcaff;'>SCENARIO</span> <span style='color: #f0f0f0;'>| PROBABILITY</span>
-                <hr style='border-color: #333333; margin: 5px 0;'>
-            </div>
-        """, unsafe_allow_html=True)
-        
-        # Probability rows with color coding
-        up_class = "positive" if prob_up > 0.25 else ""
-        down_class = "negative" if prob_down > 0.25 else ""
-        
-        st.markdown(f"""
-            <div style='font-family: Consolas, monospace;'>
-                <div style='margin: 5px 0;'>
-                    <span style='color: #f0f0f0;'>UP > +{percent_up}%</span> | <span class='{up_class}'>{prob_up:.2%}</span>
-                </div>
-                <div style='margin: 5px 0;'>
-                    <span style='color: #f0f0f0;'>DOWN > -{percent_down}%</span> | <span class='{down_class}'>{prob_down:.2%}</span>
-                </div>
-                <div style='margin: 5px 0;'>
-                    <span style='color: #f0f0f0;'>FLAT (within range)</span> | <span>{prob_flat:.2%}</span>
-                </div>
-            </div>
-        """, unsafe_allow_html=True)
+        st.subheader("Scenario Probabilities")
+        st.write(f"• Stock Up > +{percent_up}%: **{prob_up:.2%}**")
+        st.write(f"• Stock Down > -{percent_down}%: **{prob_down:.2%}**")
+        st.write(f"• Flat (within range): **{prob_flat:.2%}**")
 
         # Payoff Matrix
         strategies = ['Buy Call', 'Buy Put', 'Write Call', 'Write Put']
@@ -429,13 +240,8 @@ if submit:
                 row.append(round(payoff, 2))
             matrix.append(row)
 
-        # Payoff Matrix with Terminal styling
-        st.subheader("PAYOFF MATRIX")
-        
-        # Convert matrix to DataFrame but customize display
         df = pd.DataFrame(matrix, index=strategies, columns=scenarios)
-        
-        # Create custom styled terminal table header
+        st.subheader("Payoff Matrix")
         st.markdown("""
             <style>
             /* Make table responsive on mobile */
@@ -444,44 +250,26 @@ if submit:
             }
             </style>
             """, unsafe_allow_html=True)
-            
-        # Format DataFrame values with color coding
-        def highlight_cells(val):
-            color = '#00ff9d' if val > 0 else '#ff6b6b' if val < 0 else '#f0f0f0'
-            return f'color: {color}'
-            
-        styled_df = df.style.map(highlight_cells)
-        st.dataframe(styled_df, use_container_width=True)
+        st.dataframe(df, use_container_width=True)
 
-        st.subheader("STRATEGY RECOMMENDATIONS")
-        
-        # Terminal-style recommendation output
-        minimax_color = "positive" if minimax > 0 else "negative" if minimax < 0 else ""
-        ev_color = "positive" if ev[np.argmax(ev)] > 0 else "negative" if ev[np.argmax(ev)] < 0 else ""
-        
-        st.markdown(f"""
-            <div style='font-family: Consolas, monospace; margin: 10px 0;'>
-                <div style='margin: 5px 0;'>
-                    <span style='color: #8fcaff;'>MINIMAX:</span> {minimax_strategy} [<span class='{minimax_color}'>${minimax:.2f}</span>]
-                </div>
-                <div style='margin: 5px 0;'>
-                    <span style='color: #8fcaff;'>EXPECTED VALUE:</span> {best_ev_strategy} [<span class='{ev_color}'>${ev[np.argmax(ev)]:.2f}</span>]
-                </div>
-            </div>
-        """, unsafe_allow_html=True)
-        
-    # Close the terminal card for results section
-    st.markdown("""
-        </div>
-    """, unsafe_allow_html=True)
+        st.subheader("📌 Strategy Recommendations")
+        row_mins = np.min(matrix, axis=1)
+        minimax = np.max(row_mins)
+        minimax_strategy = strategies[np.argmax(row_mins)]
+
+        ev = np.dot(matrix, [prob_up, prob_down, prob_flat])
+        best_ev_strategy = strategies[np.argmax(ev)]
+
+        st.write(f"🛡 Minimax: **{minimax_strategy}** (${minimax:.2f})")
+        st.write(f"🎯 Expected Value: **{best_ev_strategy}** (${ev[np.argmax(ev)]:.2f})")
 
 # -----------------------------
-# ⚠️ Disclaimer (Terminal Style)
+# ⚠️ Disclaimer (Soft Gray, Responsive)
 # -----------------------------
 st.markdown("""
-<hr style="border-color: #333333; margin-top: 2rem;">
-<p style='font-family: Consolas, "Courier New", monospace; font-size: 0.8em; color: #666666; text-align: center; padding: 0 10px;'>
-/* DISCLAIMER: FOR INFORMATIONAL AND EDUCATIONAL PURPOSES ONLY. NOT FINANCIAL ADVICE. */
+<hr>
+<p style='font-size: 0.85em; color: #999999; text-align: center; padding: 0 10px;'>
+<b>Disclaimer:</b> This tool is for informational and educational purposes only. It does not constitute financial advice, investment recommendations, or a guarantee of future performance. Trading options involves risk, and users should consult a licensed financial advisor before making any trading decisions.
 </p>
-<div style="height: 20px;"></div>
+<div class="footer-spacer" style="height: 20px;"></div>
 """, unsafe_allow_html=True)
