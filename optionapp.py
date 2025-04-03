@@ -96,7 +96,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
     
-    /* Button styling */
+/* Button styling */
     .stButton > button {
         background: linear-gradient(45deg, #4568dc, #3f5efb) !important;
         color: white !important;
