@@ -11,11 +11,14 @@ import datetime
 # -----------------------------
 # 🔧 CSS for Background and Edgy Design
 # -----------------------------
+# -----------------------------
+# 🔧 CSS for Background and Edgy Design
+# -----------------------------
 st.markdown("""
     <style>
     /* Base background with subtle gradient */
     html, body, .stApp {
-        background: linear-gradient(145deg, #f8f9fa, #e9ecef) !important;
+        background-color: #f8f9fa !important;
     }
     
     /* Sharp card styling with subtle shadow */
