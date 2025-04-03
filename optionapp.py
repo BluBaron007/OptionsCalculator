@@ -11,21 +11,45 @@ import datetime
 # -----------------------------
 # 🔧 CSS for Background and Responsive Design
 # -----------------------------
+# -----------------------------
+# 🔧 CSS for Streamlit-specific Background and Responsive Design
+# -----------------------------
 st.markdown("""
     <style>
     /* Base background */
-    html, body, .stApp {
+    html, body, [data-testid="stAppViewContainer"], [data-testid="stHeader"], [data-testid="stToolbar"], [data-testid="stSidebar"] {
         background-color: #F8F8FF !important;
     }
     
     /* Remove default streamlit bottom padding and footer */
+    [data-testid="stAppViewContainer"] > .main {
+        padding-bottom: 0 !important;
+    }
+    
     .main .block-container {
         padding-bottom: 0 !important;
         max-width: 100% !important;
     }
     
+    /* Hide Streamlit footer */
     footer {
         display: none !important;
+    }
+    
+    [data-testid="stDecoration"] {
+        display: none !important;
+    }
+    
+    /* Fix for Streamlit sidebar expander */
+    button[kind="headerButton"] {
+        background-color: transparent !important;
+    }
+    
+    /* Streamlit elements styling */
+    .stForm > div > div {
+        border-width: 1px;
+        border-radius: 6px;
+        padding: 15px;
     }
     
     /* Responsive design adjustments */
