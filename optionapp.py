@@ -6,12 +6,45 @@ from scipy.stats import norm
 import datetime
 
 # -----------------------------
-# 🔧 CSS for Background
+# 🔧 CSS for Background and Responsive Design
 # -----------------------------
 st.markdown("""
     <style>
+    /* Base background */
     html, body, .stApp {
         background-color: #F8F8FF !important;
+    }
+    
+    /* Responsive design adjustments */
+    @media screen and (max-width: 768px) {
+        /* Adjust content padding for mobile */
+        .block-container {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+            padding-top: 1rem !important;
+        }
+        
+        /* Make form elements full width on mobile */
+        .stTextInput, .stNumberInput, .stSelectbox, .stButton {
+            width: 100% !important;
+        }
+        
+        /* Reduce header sizes on mobile */
+        h1 {
+            font-size: 1.5rem !important;
+        }
+        h2 {
+            font-size: 1.3rem !important;
+        }
+        h3 {
+            font-size: 1.1rem !important;
+        }
+        
+        /* Adjust table display for mobile */
+        .dataframe {
+            font-size: 0.8rem !important;
+            overflow-x: auto !important;
+        }
     }
     </style>
 """, unsafe_allow_html=True)
@@ -27,11 +60,12 @@ if 'strike' not in st.session_state:
     st.session_state.strike = None
 
 # -----------------------------
-# 🧊 Logo Only (Centered, Transparent, Clean)
+# 🧊 Logo Only (Centered, Transparent, Clean, Responsive)
 # -----------------------------
 st.markdown("""
     <div style='text-align: center;'>
-        <img src='https://raw.githubusercontent.com/BluBaron007/OptionsCalculator/main/strikely_logo_clean.png' width='500' style='margin-bottom: -50px;'/>
+        <img src='https://raw.githubusercontent.com/BluBaron007/OptionsCalculator/main/strikely_logo_clean.png' 
+             style='max-width: 500px; width: 90%; margin-bottom: -80px;'/>
     </div>
     <hr>
 """, unsafe_allow_html=True)
@@ -43,16 +77,23 @@ st.markdown("<div class='glass-form'>", unsafe_allow_html=True)
 
 with st.form("input_form"):
     st.subheader("Input Parameters")
-    ticker = st.text_input("Stock Ticker", "AAPL").upper()
+    
+    # Use columns for better space utilization on both desktop and mobile
+    col1, col2 = st.columns([1, 1])
+    
+    with col1:
+        ticker = st.text_input("Stock Ticker", "AAPL").upper()
 
-    if ticker != st.session_state.last_ticker:
-        st.session_state.last_ticker = ticker
-        st.session_state.exp_date = None
-        st.session_state.strike = None
-
-    num_contracts = st.number_input("Number of Contracts", min_value=1, value=1)
-    percent_up = st.number_input("Stock Move Up (%)", min_value=1, value=10)
-    percent_down = st.number_input("Stock Move Down (%)", min_value=1, value=10)
+        if ticker != st.session_state.last_ticker:
+            st.session_state.last_ticker = ticker
+            st.session_state.exp_date = None
+            st.session_state.strike = None
+            
+        num_contracts = st.number_input("Number of Contracts", min_value=1, value=1)
+    
+    with col2:
+        percent_up = st.number_input("Stock Move Up (%)", min_value=1, value=10)
+        percent_down = st.number_input("Stock Move Down (%)", min_value=1, value=10)
 
     submit = False
     show_submit = True
@@ -98,7 +139,7 @@ if submit:
 
     st.markdown(
         f"""
-        <p style='text-align: center;'>
+        <p style='text-align: center; overflow-x: auto; white-space: nowrap;'>
         📊 <strong>Moving Averages:</strong>
         <strong>5D</strong>: ${ma_5:.2f}, 
         <strong>10D</strong>: ${ma_10:.2f}, 
@@ -201,7 +242,15 @@ if submit:
 
         df = pd.DataFrame(matrix, index=strategies, columns=scenarios)
         st.subheader("Payoff Matrix")
-        st.dataframe(df)
+        st.markdown("""
+            <style>
+            /* Make table responsive on mobile */
+            .stDataFrame div[data-testid="stHorizontalBlock"] {
+                overflow-x: auto !important;
+            }
+            </style>
+            """, unsafe_allow_html=True)
+        st.dataframe(df, use_container_width=True)
 
         st.subheader("📌 Strategy Recommendations")
         row_mins = np.min(matrix, axis=1)
@@ -215,11 +264,12 @@ if submit:
         st.write(f"🎯 Expected Value: **{best_ev_strategy}** (${ev[np.argmax(ev)]:.2f})")
 
 # -----------------------------
-# ⚠️ Disclaimer (Soft Gray)
+# ⚠️ Disclaimer (Soft Gray, Responsive)
 # -----------------------------
 st.markdown("""
 <hr>
-<p style='font-size: 0.85em; color: #999999; text-align: center;'>
+<p style='font-size: 0.85em; color: #999999; text-align: center; padding: 0 10px;'>
 <b>Disclaimer:</b> This tool is for informational and educational purposes only. It does not constitute financial advice, investment recommendations, or a guarantee of future performance. Trading options involves risk, and users should consult a licensed financial advisor before making any trading decisions.
 </p>
+<div class="footer-spacer" style="height: 20px;"></div>
 """, unsafe_allow_html=True)
