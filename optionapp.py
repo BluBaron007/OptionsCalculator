@@ -77,12 +77,16 @@ st.markdown("<div class='glass-form'>", unsafe_allow_html=True)
 
 with st.form("input_form"):
     st.subheader("Input Parameters")
+    ticker = st.text_input("Stock Ticker", "AAPL").upper()
     
-    # Use columns for better space utilization on both desktop and mobile
-    col1, col2 = st.columns([1, 1])
+    # Create two columns
+    col1, col2 = st.columns(2)
     
     with col1:
-        ticker = st.text_input("Stock Ticker", "AAPL").upper()
+        percent_up = st.number_input("Stock Move Up (%)", min_value=1, value=10)
+    
+    with col2:
+        percent_down = st.number_input("Stock Move Down (%)", min_value=1, value=10)
 
         if ticker != st.session_state.last_ticker:
             st.session_state.last_ticker = ticker
