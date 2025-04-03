@@ -6,150 +6,13 @@ from scipy.stats import norm
 import datetime
 
 # -----------------------------
-# 🔧 CSS for Minimal Design
+# 🔧 CSS for Background and Responsive Design
 # -----------------------------
 st.markdown("""
     <style>
-    /* Clean, minimal background */
+    /* Base background */
     html, body, .stApp {
-        background-color: #f8f9fa !important;
-    }
-    
-    /* Remove default streamlit bottom decoration and padding */
-    .main .block-container {
-        padding-bottom: 0 !important;
-        max-width: 100% !important;
-    }
-    
-    footer {
-        display: none !important;
-    }
-    
-    /* Simple card effect */
-    .card-container {
-        background-color: white;
-        border-radius: 6px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        padding: 1.5rem;
-        margin-bottom: 1rem;
-    }
-    
-    /* Clean form elements */
-    .stTextInput > div > div > input,
-    .stNumberInput > div > div > input,
-    .stSelectbox > div > div > div {
-        border-radius: 4px;
-        border: 1px solid #dee2e6;
-    }
-    
-    /* Button styling */
-    .stButton > button {
-        background-color: #4568dc;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        transition: background-color 0.2s;
-    }
-    
-    .stButton > button:hover {
-        background-color: #3a56b4;
-    }
-    
-    /* Subheader styling */
-    h2, h3, .stSubheader {
-        color: #343a40;
-        font-weight: 500;
-    }
-    
-    /* Table styling */
-    .dataframe {
-        border: none !important;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    }
-    
-    .dataframe th {
-        background-color: #f1f3f5;
-        color: #495057;
-    }
-    
-    /* Responsive design adjustments */
-    @media screen and (max-width: 768px) {
-        .block-container {
-            padding-left: 1rem !important;
-            padding-right: 1rem !important;
-            padding-top: 1rem !important;
-        }
-        
-        .stTextInput, .stNumberInput, .stSelectbox, .stButton {
-            width: 100% !important;
-        }
-        
-        h1 { font-size: 1.5rem !important; }
-        h2 { font-size: 1.3rem !important; }
-        h3 { font-size: 1.1rem !important; }
-        
-        .dataframe {
-            font-size: 0.8rem !important;
-            overflow-x: auto !important;
-        }
-    }
-    </style>
-""", unsafe_allow_html=True)
-    
-    /* Button styling */
-    .stButton > button {
-        background: linear-gradient(45deg, #4568dc, #3f5efb) !important;
-        color: white !important;
-        border: none !important;
-        border-radius: 6px !important;
-        padding: 10px 24px !important;
-        transition: all 0.3s ease !important;
-    }
-    
-    .stButton > button:hover {
-        transform: translateY(-2px) !important;
-        box-shadow: 0 5px 15px rgba(63, 94, 251, 0.4) !important;
-    }
-    
-    /* Input field styling */
-    .stTextInput > div > div > input,
-    .stNumberInput > div > div > input,
-    .stSelectbox > div > div > div {
-        border-radius: 6px !important;
-        border: 1px solid rgba(173, 216, 230, 0.5) !important;
-        padding: 10px 15px !important;
-        background-color: rgba(255, 255, 255, 0.7) !important;
-    }
-    
-    /* Subheader styling */
-    h2, h3, .stSubheader {
-        color: #1e3a8a !important;
-        font-weight: 600 !important;
-    }
-    
-    /* Table styling */
-    .dataframe {
-        border-radius: 10px !important;
-        overflow: hidden !important;
-        border: none !important;
-        background-color: rgba(255, 255, 255, 0.7) !important;
-    }
-    
-    .dataframe th {
-        background-color: rgba(63, 94, 251, 0.1) !important;
-        color: #1e3a8a !important;
-    }
-    
-    /* Result sections */
-    [data-testid="stVerticalBlock"] > div {
-        background: rgba(255, 255, 255, 0.65) !important;
-        backdrop-filter: blur(8px) !important;
-        -webkit-backdrop-filter: blur(8px) !important;
-        border-radius: 10px !important;
-        padding: 10px 15px !important;
-        margin-bottom: 15px !important;
-        border: 1px solid rgba(255, 255, 255, 0.18) !important;
-        box-shadow: 0 4px 15px 0 rgba(31, 38, 135, 0.1) !important;
+        background-color: #F8F8FF !important;
     }
     
     /* Responsive design adjustments */
@@ -197,14 +60,14 @@ if 'strike' not in st.session_state:
     st.session_state.strike = None
 
 # -----------------------------
-# 🧊 Logo - Minimal Style
+# 🧊 Logo Only (Centered, Transparent, Clean, Responsive)
 # -----------------------------
 st.markdown("""
-    <div style='text-align: center; margin-bottom: 30px;'>
-        <h1 style='font-family: Arial, sans-serif; color: #343a40; font-weight: 500; margin-bottom: 0;'>
-            <span style='color: #4568dc;'>Strikely</span>.ai
-        </h1>
+    <div style='text-align: center;'>
+        <img src='https://raw.githubusercontent.com/BluBaron007/OptionsCalculator/main/strikely_logo_clean.png' 
+             style='max-width: 500px; width: 90%; margin-bottom: -80px;'/>
     </div>
+    <hr>
 """, unsafe_allow_html=True)
 
 # -----------------------------
@@ -214,16 +77,23 @@ st.markdown("<div class='glass-form'>", unsafe_allow_html=True)
 
 with st.form("input_form"):
     st.subheader("Input Parameters")
-    ticker = st.text_input("Stock Ticker", "AAPL").upper()
     
-    if ticker != st.session_state.last_ticker:
-        st.session_state.last_ticker = ticker
-        st.session_state.exp_date = None
-        st.session_state.strike = None
+    # Use columns for better space utilization on both desktop and mobile
+    col1, col2 = st.columns([1, 1])
+    
+    with col1:
+        ticker = st.text_input("Stock Ticker", "AAPL").upper()
 
-    num_contracts = st.number_input("Number of Contracts", min_value=1, value=1)
-    percent_up = st.number_input("Stock Move Up (%)", min_value=1, value=10)
-    percent_down = st.number_input("Stock Move Down (%)", min_value=1, value=10)
+        if ticker != st.session_state.last_ticker:
+            st.session_state.last_ticker = ticker
+            st.session_state.exp_date = None
+            st.session_state.strike = None
+            
+        num_contracts = st.number_input("Number of Contracts", min_value=1, value=1)
+    
+    with col2:
+        percent_up = st.number_input("Stock Move Up (%)", min_value=1, value=10)
+        percent_down = st.number_input("Stock Move Down (%)", min_value=1, value=10)
 
     submit = False
     show_submit = True
@@ -269,7 +139,7 @@ if submit:
 
     st.markdown(
         f"""
-        <p style='text-align: center;'>
+        <p style='text-align: center; overflow-x: auto; white-space: nowrap;'>
         📊 <strong>Moving Averages:</strong>
         <strong>5D</strong>: ${ma_5:.2f}, 
         <strong>10D</strong>: ${ma_10:.2f}, 
@@ -372,7 +242,15 @@ if submit:
 
         df = pd.DataFrame(matrix, index=strategies, columns=scenarios)
         st.subheader("Payoff Matrix")
-        st.dataframe(df)
+        st.markdown("""
+            <style>
+            /* Make table responsive on mobile */
+            .stDataFrame div[data-testid="stHorizontalBlock"] {
+                overflow-x: auto !important;
+            }
+            </style>
+            """, unsafe_allow_html=True)
+        st.dataframe(df, use_container_width=True)
 
         st.subheader("📌 Strategy Recommendations")
         row_mins = np.min(matrix, axis=1)
@@ -386,11 +264,12 @@ if submit:
         st.write(f"🎯 Expected Value: **{best_ev_strategy}** (${ev[np.argmax(ev)]:.2f})")
 
 # -----------------------------
-# ⚠️ Disclaimer (Soft Gray)
+# ⚠️ Disclaimer (Soft Gray, Responsive)
 # -----------------------------
 st.markdown("""
 <hr>
-<p style='font-size: 0.85em; color: #999999; text-align: center;'>
+<p style='font-size: 0.85em; color: #999999; text-align: center; padding: 0 10px;'>
 <b>Disclaimer:</b> This tool is for informational and educational purposes only. It does not constitute financial advice, investment recommendations, or a guarantee of future performance. Trading options involves risk, and users should consult a licensed financial advisor before making any trading decisions.
 </p>
+<div class="footer-spacer" style="height: 20px;"></div>
 """, unsafe_allow_html=True)
