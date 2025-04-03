@@ -8,11 +8,24 @@ import datetime
 # -----------------------------
 # 🔧 CSS for Background and Responsive Design
 # -----------------------------
+# -----------------------------
+# 🔧 CSS for Background and Responsive Design
+# -----------------------------
 st.markdown("""
     <style>
     /* Base background */
     html, body, .stApp {
         background-color: #F8F8FF !important;
+    }
+    
+    /* Remove default streamlit bottom padding and footer */
+    .main .block-container {
+        padding-bottom: 0 !important;
+        max-width: 100% !important;
+    }
+    
+    footer {
+        display: none !important;
     }
     
     /* Responsive design adjustments */
