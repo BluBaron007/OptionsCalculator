@@ -65,7 +65,7 @@ if 'strike' not in st.session_state:
 st.markdown("""
     <div style='text-align: center;'>
         <img src='https://raw.githubusercontent.com/BluBaron007/OptionsCalculator/main/strikely_logo_clean.png' 
-             style='max-width: 500px; width: 90%; margin-bottom: -80px;'/>
+             style='max-width: 500px; width: 90%; margin-bottom: -150px;'/>
     </div>
     <hr>
 """, unsafe_allow_html=True)
