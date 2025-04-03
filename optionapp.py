@@ -15,10 +15,25 @@ st.markdown("""
         background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%) !important;
     }
     
+    /* Remove default streamlit bottom padding that creates the white box */
+    .main .block-container {
+        padding-bottom: 0 !important;
+        max-width: 100% !important;
+    }
+    
+    /* Remove default footer that shows the blue wave */
+    footer {
+        display: none !important;
+    }
+    
+    /* Hide any wave decoration */
+    .decoration {
+        display: none !important;
+    }
+    
     /* Glassmorphism card effect */
     div.block-container {
         padding-top: 2rem;
-        padding-bottom: 2rem;
     }
     
     .glass-form, .stForm, [data-testid="stForm"] {
@@ -133,14 +148,15 @@ if 'strike' not in st.session_state:
     st.session_state.strike = None
 
 # -----------------------------
-# 🧊 Logo Only (Centered, Transparent, Clean, Responsive)
+# 🧊 Logo Only (Clean, No Bubble, Matches Background)
 # -----------------------------
 st.markdown("""
     <div style='text-align: center;'>
-        <img src='https://raw.githubusercontent.com/BluBaron007/OptionsCalculator/main/strikely_logo_clean.png' 
-             style='max-width: 500px; width: 90%; margin-bottom: -80px; filter: drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.1));'/>
+        <h1 style='font-family: Arial, sans-serif; color: #2c3e50; font-weight: 600; margin-bottom: 5px;'>
+            <span style='color: #4568dc;'>Strikely</span>.ai
+        </h1>
+        <div style='width: 100px; height: 5px; background: linear-gradient(90deg, #4568dc, #3f5efb); margin: 10px auto 40px; border-radius: 10px;'></div>
     </div>
-    <hr style='margin-bottom: 30px; opacity: 0.3;'>
 """, unsafe_allow_html=True)
 
 # -----------------------------
