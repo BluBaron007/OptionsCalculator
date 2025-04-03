@@ -6,13 +6,86 @@ from scipy.stats import norm
 import datetime
 
 # -----------------------------
-# 🔧 CSS for Background and Responsive Design
+# 🔧 CSS for Glassmorphism Theme and Responsive Design
 # -----------------------------
 st.markdown("""
     <style>
-    /* Base background */
+    /* Base background with gradient */
     html, body, .stApp {
-        background-color: #F8F8FF !important;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%) !important;
+    }
+    
+    /* Glassmorphism card effect */
+    div.block-container {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
+    
+    .glass-form, .stForm, [data-testid="stForm"] {
+        background: rgba(255, 255, 255, 0.7) !important;
+        backdrop-filter: blur(10px) !important;
+        -webkit-backdrop-filter: blur(10px) !important;
+        border-radius: 10px !important;
+        border: 1px solid rgba(255, 255, 255, 0.18) !important;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15) !important;
+        padding: 20px !important;
+        margin-bottom: 20px !important;
+    }
+    
+    /* Button styling */
+    .stButton > button {
+        background: linear-gradient(45deg, #4568dc, #3f5efb) !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 6px !important;
+        padding: 10px 24px !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    .stButton > button:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 5px 15px rgba(63, 94, 251, 0.4) !important;
+    }
+    
+    /* Input field styling */
+    .stTextInput > div > div > input,
+    .stNumberInput > div > div > input,
+    .stSelectbox > div > div > div {
+        border-radius: 6px !important;
+        border: 1px solid rgba(173, 216, 230, 0.5) !important;
+        padding: 10px 15px !important;
+        background-color: rgba(255, 255, 255, 0.7) !important;
+    }
+    
+    /* Subheader styling */
+    h2, h3, .stSubheader {
+        color: #1e3a8a !important;
+        font-weight: 600 !important;
+    }
+    
+    /* Table styling */
+    .dataframe {
+        border-radius: 10px !important;
+        overflow: hidden !important;
+        border: none !important;
+        background-color: rgba(255, 255, 255, 0.7) !important;
+    }
+    
+    .dataframe th {
+        background-color: rgba(63, 94, 251, 0.1) !important;
+        color: #1e3a8a !important;
+    }
+    
+    /* Result sections */
+    [data-testid="stVerticalBlock"] > div {
+        background: rgba(255, 255, 255, 0.65) !important;
+        backdrop-filter: blur(8px) !important;
+        -webkit-backdrop-filter: blur(8px) !important;
+        border-radius: 10px !important;
+        padding: 10px 15px !important;
+        margin-bottom: 15px !important;
+        border: 1px solid rgba(255, 255, 255, 0.18) !important;
+        box-shadow: 0 4px 15px 0 rgba(31, 38, 135, 0.1) !important;
     }
     
     /* Responsive design adjustments */
@@ -65,9 +138,9 @@ if 'strike' not in st.session_state:
 st.markdown("""
     <div style='text-align: center;'>
         <img src='https://raw.githubusercontent.com/BluBaron007/OptionsCalculator/main/strikely_logo_clean.png' 
-             style='max-width: 500px; width: 90%; margin-bottom: -80px;'/>
+             style='max-width: 500px; width: 90%; margin-bottom: -80px; filter: drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.1));'/>
     </div>
-    <hr>
+    <hr style='margin-bottom: 30px; opacity: 0.3;'>
 """, unsafe_allow_html=True)
 
 # -----------------------------
@@ -126,6 +199,12 @@ st.markdown("</div>", unsafe_allow_html=True)
 # -----------------------------
 if submit:
     st.markdown("---")
+    
+    # Create a glassmorphism card effect for results section
+    st.markdown("""
+        <div class="glass-form">
+    """, unsafe_allow_html=True)
+    
     st.subheader("Market Snapshot")
     history = stock.history(period="250d")
     current_price = history['Close'].iloc[-1]
@@ -248,6 +327,13 @@ if submit:
             .stDataFrame div[data-testid="stHorizontalBlock"] {
                 overflow-x: auto !important;
             }
+            
+            /* Glass effect for dataframe */
+            .dataframe {
+                background: rgba(255, 255, 255, 0.6) !important;
+                backdrop-filter: blur(5px) !important;
+                -webkit-backdrop-filter: blur(5px) !important;
+            }
             </style>
             """, unsafe_allow_html=True)
         st.dataframe(df, use_container_width=True)
@@ -262,6 +348,11 @@ if submit:
 
         st.write(f"🛡 Minimax: **{minimax_strategy}** (${minimax:.2f})")
         st.write(f"🎯 Expected Value: **{best_ev_strategy}** (${ev[np.argmax(ev)]:.2f})")
+        
+    # Close the glassmorphism card for results section
+    st.markdown("""
+        </div>
+    """, unsafe_allow_html=True)
 
 # -----------------------------
 # ⚠️ Disclaimer (Soft Gray, Responsive)
