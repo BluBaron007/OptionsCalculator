@@ -6,46 +6,95 @@ from scipy.stats import norm
 import datetime
 
 # -----------------------------
-# 🔧 CSS for Glassmorphism Theme and Responsive Design
+# 🔧 CSS for Minimal Design
 # -----------------------------
 st.markdown("""
     <style>
-    /* Base background with gradient */
+    /* Clean, minimal background */
     html, body, .stApp {
-        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%) !important;
+        background-color: #f8f9fa !important;
     }
     
-    /* Remove default streamlit bottom padding that creates the white box */
+    /* Remove default streamlit bottom decoration and padding */
     .main .block-container {
         padding-bottom: 0 !important;
         max-width: 100% !important;
     }
     
-    /* Remove default footer that shows the blue wave */
     footer {
         display: none !important;
     }
     
-    /* Hide any wave decoration */
-    .decoration {
-        display: none !important;
+    /* Simple card effect */
+    .card-container {
+        background-color: white;
+        border-radius: 6px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        padding: 1.5rem;
+        margin-bottom: 1rem;
     }
     
-    /* Glassmorphism card effect */
-    div.block-container {
-        padding-top: 2rem;
+    /* Clean form elements */
+    .stTextInput > div > div > input,
+    .stNumberInput > div > div > input,
+    .stSelectbox > div > div > div {
+        border-radius: 4px;
+        border: 1px solid #dee2e6;
     }
     
-    .glass-form, .stForm, [data-testid="stForm"] {
-        background: rgba(255, 255, 255, 0.7) !important;
-        backdrop-filter: blur(10px) !important;
-        -webkit-backdrop-filter: blur(10px) !important;
-        border-radius: 10px !important;
-        border: 1px solid rgba(255, 255, 255, 0.18) !important;
-        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15) !important;
-        padding: 20px !important;
-        margin-bottom: 20px !important;
+    /* Button styling */
+    .stButton > button {
+        background-color: #4568dc;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        transition: background-color 0.2s;
     }
+    
+    .stButton > button:hover {
+        background-color: #3a56b4;
+    }
+    
+    /* Subheader styling */
+    h2, h3, .stSubheader {
+        color: #343a40;
+        font-weight: 500;
+    }
+    
+    /* Table styling */
+    .dataframe {
+        border: none !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    
+    .dataframe th {
+        background-color: #f1f3f5;
+        color: #495057;
+    }
+    
+    /* Responsive design adjustments */
+    @media screen and (max-width: 768px) {
+        .block-container {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+            padding-top: 1rem !important;
+        }
+        
+        .stTextInput, .stNumberInput, .stSelectbox, .stButton {
+            width: 100% !important;
+        }
+        
+        h1 { font-size: 1.5rem !important; }
+        h2 { font-size: 1.3rem !important; }
+        h3 { font-size: 1.1rem !important; }
+        
+        .dataframe {
+            font-size: 0.8rem !important;
+            overflow-x: auto !important;
+        }
+    }
+    </style>
+""", unsafe_allow_html=True)
     
     /* Button styling */
     .stButton > button {
@@ -148,21 +197,20 @@ if 'strike' not in st.session_state:
     st.session_state.strike = None
 
 # -----------------------------
-# 🧊 Logo Only (Clean, No Bubble, Matches Background)
+# 🧊 Logo - Minimal Style
 # -----------------------------
 st.markdown("""
-    <div style='text-align: center;'>
-        <h1 style='font-family: Arial, sans-serif; color: #2c3e50; font-weight: 600; margin-bottom: 5px;'>
+    <div style='text-align: center; margin-bottom: 30px;'>
+        <h1 style='font-family: Arial, sans-serif; color: #343a40; font-weight: 500; margin-bottom: 0;'>
             <span style='color: #4568dc;'>Strikely</span>.ai
         </h1>
-        <div style='width: 100px; height: 5px; background: linear-gradient(90deg, #4568dc, #3f5efb); margin: 10px auto 40px; border-radius: 10px;'></div>
     </div>
 """, unsafe_allow_html=True)
 
 # -----------------------------
 # 📦 Form Section
 # -----------------------------
-st.markdown("<div class='glass-form'>", unsafe_allow_html=True)
+st.markdown("<div class='card-container'>", unsafe_allow_html=True)
 
 with st.form("input_form"):
     st.subheader("Input Parameters")
@@ -216,9 +264,9 @@ st.markdown("</div>", unsafe_allow_html=True)
 if submit:
     st.markdown("---")
     
-    # Create a glassmorphism card effect for results section
+    # Create a clean card container for results section
     st.markdown("""
-        <div class="glass-form">
+        <div class="card-container">
     """, unsafe_allow_html=True)
     
     st.subheader("Market Snapshot")
@@ -343,13 +391,6 @@ if submit:
             .stDataFrame div[data-testid="stHorizontalBlock"] {
                 overflow-x: auto !important;
             }
-            
-            /* Glass effect for dataframe */
-            .dataframe {
-                background: rgba(255, 255, 255, 0.6) !important;
-                backdrop-filter: blur(5px) !important;
-                -webkit-backdrop-filter: blur(5px) !important;
-            }
             </style>
             """, unsafe_allow_html=True)
         st.dataframe(df, use_container_width=True)
@@ -371,12 +412,12 @@ if submit:
     """, unsafe_allow_html=True)
 
 # -----------------------------
-# ⚠️ Disclaimer (Soft Gray, Responsive)
+# ⚠️ Disclaimer (Minimal Style)
 # -----------------------------
 st.markdown("""
-<hr>
-<p style='font-size: 0.85em; color: #999999; text-align: center; padding: 0 10px;'>
-<b>Disclaimer:</b> This tool is for informational and educational purposes only. It does not constitute financial advice, investment recommendations, or a guarantee of future performance. Trading options involves risk, and users should consult a licensed financial advisor before making any trading decisions.
+<hr style="margin-top: 2rem; opacity: 0.2;">
+<p style='font-size: 0.8em; color: #6c757d; text-align: center; padding: 0 10px;'>
+<b>Disclaimer:</b> This tool is for informational and educational purposes only. It does not constitute financial advice or investment recommendations. Trading options involves risk.
 </p>
-<div class="footer-spacer" style="height: 20px;"></div>
+<div style="height: 20px;"></div>
 """, unsafe_allow_html=True)
