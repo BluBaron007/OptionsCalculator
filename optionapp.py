@@ -8,86 +8,114 @@ import datetime
 # -----------------------------
 # 🔧 CSS for Minimal Design
 # -----------------------------
+# -----------------------------
+# 🔧 CSS for Background and Edgy Design
+# -----------------------------
 st.markdown("""
     <style>
-    /* Clean, minimal background */
+    /* Base background with subtle gradient */
     html, body, .stApp {
-        background-color: #f8f9fa !important;
+        background: linear-gradient(145deg, #f8f9fa, #e9ecef) !important;
     }
     
-    /* Remove default streamlit bottom decoration and padding */
+    /* Sharp card styling with subtle shadow */
+    .glass-form, .stForm, [data-testid="stForm"] {
+        background-color: white !important;
+        border-left: 4px solid #4361ee !important;
+        border-radius: 2px !important;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.05) !important;
+        padding: 20px !important;
+    }
+    
+    /* Heading with underline accent */
+    .stSubheader {
+        border-bottom: 2px solid #4361ee !important;
+        padding-bottom: 8px !important;
+        font-weight: 600 !important;
+    }
+    
+    /* Button styling */
+    .stButton > button {
+        background-color: #4361ee !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 2px !important;
+        padding: 0.5rem 1rem !important;
+        font-weight: 500 !important;
+        transition: transform 0.2s, box-shadow 0.2s !important;
+    }
+    
+    .stButton > button:hover {
+        transform: translateY(-1px) !important;
+        box-shadow: 0 4px 8px rgba(67, 97, 238, 0.15) !important;
+    }
+    
+    /* Input fields with minimal styling */
+    .stTextInput > div > div > input,
+    .stNumberInput > div > div > input,
+    .stSelectbox > div > div > div {
+        border-radius: 2px !important;
+        border: 1px solid #dee2e6 !important;
+    }
+    
+    .stTextInput > div > div > input:focus,
+    .stNumberInput > div > div > input:focus,
+    .stSelectbox > div > div > div:focus {
+        border-color: #4361ee !important;
+        box-shadow: none !important;
+    }
+    
+    /* Table with clean, sharp edges */
+    .dataframe {
+        border: none !important;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
+    }
+    
+    .dataframe th {
+        background-color: #f1f3f5 !important;
+        border-top: none !important;
+        border-left: none !important;
+        border-right: none !important;
+        border-bottom: 1px solid #dee2e6 !important;
+        font-weight: 600 !important;
+    }
+    
+    /* Remove default streamlit bottom decoration and footer */
+    footer {
+        display: none !important;
+    }
+    
     .main .block-container {
         padding-bottom: 0 !important;
         max-width: 100% !important;
     }
     
-    footer {
-        display: none !important;
-    }
-    
-    /* Simple card effect */
-    .card-container {
-        background-color: white;
-        border-radius: 6px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        padding: 1.5rem;
-        margin-bottom: 1rem;
-    }
-    
-    /* Clean form elements */
-    .stTextInput > div > div > input,
-    .stNumberInput > div > div > input,
-    .stSelectbox > div > div > div {
-        border-radius: 4px;
-        border: 1px solid #dee2e6;
-    }
-    
-    /* Button styling */
-    .stButton > button {
-        background-color: #4568dc;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        transition: background-color 0.2s;
-    }
-    
-    .stButton > button:hover {
-        background-color: #3a56b4;
-    }
-    
-    /* Subheader styling */
-    h2, h3, .stSubheader {
-        color: #343a40;
-        font-weight: 500;
-    }
-    
-    /* Table styling */
-    .dataframe {
-        border: none !important;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    }
-    
-    .dataframe th {
-        background-color: #f1f3f5;
-        color: #495057;
-    }
-    
     /* Responsive design adjustments */
     @media screen and (max-width: 768px) {
+        /* Adjust content padding for mobile */
         .block-container {
             padding-left: 1rem !important;
             padding-right: 1rem !important;
             padding-top: 1rem !important;
         }
         
+        /* Make form elements full width on mobile */
         .stTextInput, .stNumberInput, .stSelectbox, .stButton {
             width: 100% !important;
         }
         
-        h1 { font-size: 1.5rem !important; }
-        h2 { font-size: 1.3rem !important; }
-        h3 { font-size: 1.1rem !important; }
+        /* Reduce header sizes on mobile */
+        h1 {
+            font-size: 1.5rem !important;
+        }
+        h2 {
+            font-size: 1.3rem !important;
+        }
+        h3 {
+            font-size: 1.1rem !important;
+        }
         
+        /* Adjust table display for mobile */
         .dataframe {
             font-size: 0.8rem !important;
             overflow-x: auto !important;
