@@ -27,67 +27,58 @@ if 'strike' not in st.session_state:
     st.session_state.strike = None
 
 # -----------------------------
-# 🧊 Logo Only (Centered)
+# 🧊 Logo Only (Centered, Transparent, Clean)
 # -----------------------------
 st.markdown("""
     <div style='text-align: center;'>
-        <img src='https://raw.githubusercontent.com/BluBaron007/OptionsCalculator/main/strikely_logo_clean.png' width='400' style='margin-bottom: 0px;'/>
-        <h4 style='margin-top: -10px;'>Where Game Theory & Stock Options Collide</h4>
+        <img src='https://raw.githubusercontent.com/BluBaron007/OptionsCalculator/main/strikely_logo_clean.png' width='100' style='margin-bottom: 0px;'/>
     </div>
     <hr>
 """, unsafe_allow_html=True)
+
 # -----------------------------
 # 📦 Form Section
 # -----------------------------
+st.markdown("<div class='glass-form'>", unsafe_allow_html=True)
+
 with st.form("input_form"):
     st.subheader("Input Parameters")
-    
-    # User Inputs
     ticker = st.text_input("Stock Ticker", "AAPL").upper()
+
+    if ticker != st.session_state.last_ticker:
+        st.session_state.last_ticker = ticker
+        st.session_state.exp_date = None
+        st.session_state.strike = None
+
     num_contracts = st.number_input("Number of Contracts", min_value=1, value=1)
     percent_up = st.number_input("Stock Move Up (%)", min_value=1, value=10)
     percent_down = st.number_input("Stock Move Down (%)", min_value=1, value=10)
 
-    # Always Show Submit Button
-    submit = st.form_submit_button("Run Strategy Analysis")
+    submit = False
+    show_submit = True
 
-# -----------------------------
-# 🎯 Post-Submission Logic
-# -----------------------------
-if submit:
     try:
         stock = yf.Ticker(ticker)
         expirations = stock.options
 
-        if not expirations:
-            st.warning("⚠️ No expiration dates found. Please check your ticker.")
+        if len(expirations) == 0:
+            st.warning("⚠️ No expiration dates found. Invalid or illiquid ticker.")
+            show_submit = False
         else:
-            # Expiration Date Dropdown
-            st.session_state.exp_date = st.selectbox(
-                "Select Expiration Date", 
-                expirations, 
-                index=expirations.index(st.session_state.exp_date) if st.session_state.exp_date in expirations else 0
-            )
-
-            # Options Chain & Strike Price Dropdown
+            st.session_state.exp_date = st.selectbox("Select Expiration Date", expirations, index=expirations.index(st.session_state.exp_date) if st.session_state.exp_date in expirations else 0)
             options_chain = stock.option_chain(st.session_state.exp_date)
-            calls = options_chain.calls[['strike', 'lastPrice', 'impliedVolatility']]
+            calls = options_chain.calls[['strike', 'lastPrice']]
             puts = options_chain.puts[['strike', 'lastPrice']]
             available_strikes = sorted(list(set(calls['strike']).intersection(set(puts['strike']))))
 
-            st.session_state.strike = st.selectbox(
-                "Select Strike Price",
-                available_strikes,
-                index=available_strikes.index(st.session_state.strike) if st.session_state.strike in available_strikes else 0
-            )
-
-
-    except Exception as e:
-        st.error(f"Error fetching data for {ticker}: {e}")
+            st.session_state.strike = st.selectbox("Select Strike Price", available_strikes, index=available_strikes.index(st.session_state.strike) if st.session_state.strike in available_strikes else 0)
+    except Exception:
+        st.warning("⚠️ Waiting for a valid ticker...")
 
     if show_submit:
         submit = st.form_submit_button("Run Strategy Analysis")
 
+st.markdown("</div>", unsafe_allow_html=True)
 
 # -----------------------------
 # 📈 Run the Strategy
@@ -114,15 +105,13 @@ if submit:
         <strong>75D</strong>: ${ma_75:.2f}, 
         <strong>200D</strong>: ${ma_200:.2f}
         </p>
-        """, unsafe_allow_html=True)
+        """,
+        unsafe_allow_html=True
+    )
 
     # --- Trend Logic ---
     expiry_date = datetime.datetime.strptime(st.session_state.exp_date, "%Y-%m-%d")
-    time_diff = expiry_date - datetime.datetime.now()
-    days_to_expiry = max(time_diff.total_seconds() / 86400, 0.01)
-
-    if days_to_expiry < 1:
-        st.warning("⚠️ Same-day expiration: results may be highly volatile.")
+    days_to_expiry = (expiry_date - datetime.datetime.today()).days
 
     if days_to_expiry <= 21:
         w5, w10, w75, w200 = 2, 2, 1, 0
@@ -131,12 +120,11 @@ if submit:
     else:
         w5, w10, w75, w200 = 2, 2, 3, 1
 
-    trend_score = sum([
-        w5 if current_price > ma_5 else 0,
-        w10 if current_price > ma_10 else 0,
-        w75 if current_price > ma_75 else 0,
-        w200 if current_price > ma_200 else 0,
-    ])
+    trend_score = 0
+    if current_price > ma_5: trend_score += w5
+    if current_price > ma_10: trend_score += w10
+    if current_price > ma_75: trend_score += w75
+    if current_price > ma_200: trend_score += w200
 
     if trend_score >= 6:
         trend = "Uptrend"
@@ -147,109 +135,84 @@ if submit:
 
     st.write(f"📊 Detected Trend: **{trend}**")
 
-    # (Your volatility, VIX, probabilities, matrix, and strategy logic go here)
+    # Volatility & Probabilities
+    history['Return'] = history['Close'].pct_change()
+    volatility = history['Return'].std()
 
-
-
-    # -----------------------------
-    # 🔥 Implied Volatility & VIX
-    atm_call = calls.iloc[(calls['strike'] - current_price).abs().argsort()[:1]]
-    iv = atm_call['impliedVolatility'].values[0]
-    annual_vol = iv
-    daily_vol = annual_vol / np.sqrt(252)
-    
-    # 📈 Pull VIX
-    try:
-        vix = yf.Ticker("^VIX").history(period="1d")['Close'].iloc[-1]
-    except:
-        vix = 20  # fallback average
-    # 🎯 Z-score Calculations
-    z_up = (percent_up / 100) / (daily_vol * np.sqrt(days_to_expiry))
-    z_down = (-percent_down / 100) / (daily_vol * np.sqrt(days_to_expiry))
-    
-    prob_up = 1 - norm.cdf(z_up)
-    prob_down = norm.cdf(z_down)
-    prob_flat = 1 - (prob_up + prob_down)
-    
-    # 📊 Trend Adjustment
-    if trend == "Uptrend":
-        prob_up *= 1.10
-        prob_down *= 0.90
-    elif trend == "Downtrend":
-        prob_down *= 1.10
-        prob_up *= 0.90
+    if volatility == 0 or days_to_expiry <= 0:
+        st.error("⚠️ Not enough volatility data or invalid expiration.")
     else:
-        prob_flat *= 1.10
-    
-    # 📈 VIX Adjustment
-    try:
-        vix = yf.Ticker("^VIX").history(period="1d")['Close'].iloc[-1]
-    except:
-        vix = 20  # fallback
-    
-    if vix > 25:
-        prob_down *= 1.05
-    elif vix < 15:
-        prob_up *= 1.05
-    
-    # 🧮 Normalize
-    total = prob_up + prob_down + prob_flat
-    prob_up /= total
-    prob_down /= total
-    prob_flat /= total
-    
-    st.subheader("Scenario Probabilities")
-    st.write(f"• Stock Up > +{percent_up}%: **{prob_up:.2%}**")
-    st.write(f"• Stock Down > -{percent_down}%: **{prob_down:.2%}**")
-    st.write(f"• Flat (within range): **{prob_flat:.2%}**")
-    
-    # 💰 Payoff Matrix + Strategy Logic 
-    strategies = ['Buy Call', 'Buy Put', 'Write Call', 'Write Put']
-    str = ['Buy Call', 'Buy Put', 'Write Call', 'Write Put']
-    scenarios = [f'Up {percent_up}%', f'Down {percent_down}%', 'Flat']
-    matrix = []
+        daily_vol = (volatility * np.sqrt(252)) / np.sqrt(252)
+        z_up = (percent_up / 100) / (daily_vol * np.sqrt(days_to_expiry))
+        z_down = (-percent_down / 100) / (daily_vol * np.sqrt(days_to_expiry))
 
-    for strat in strategies:
-        row = []
-        for s in scenarios:
-            if 'Up' in s:
-                price = st.session_state.strike * (1 + percent_up / 100)
-            elif 'Down' in s:
-                price = st.session_state.strike * (1 - percent_down / 100)
-            else:
-                price = st.session_state.strike
+        prob_up = 1 - norm.cdf(z_up)
+        prob_down = norm.cdf(z_down)
+        prob_flat = 1 - (prob_up + prob_down)
 
-            call_price = calls[calls['strike'] == st.session_state.strike]['lastPrice'].values[0]
-            put_price = puts[puts['strike'] == st.session_state.strike]['lastPrice'].values[0]
+        if trend == "Uptrend":
+            prob_up *= 1.10
+            prob_down *= 0.90
+        elif trend == "Downtrend":
+            prob_down *= 1.10
+            prob_up *= 0.90
+        else:
+            prob_flat *= 1.10
 
-            if strat == 'Buy Call':
-                payoff = (max(0, price - st.session_state.strike) - call_price) * 100 * num_contracts
-            elif strat == 'Buy Put':
-                payoff = (max(0, st.session_state.strike - price) - put_price) * 100 * num_contracts
-            elif strat == 'Write Call':
-                payoff = (call_price - max(0, price - st.session_state.strike)) * 100 * num_contracts
-            elif strat == 'Write Put':
-                payoff = (put_price - max(0, st.session_state.strike - price)) * 100 * num_contracts
+        total = prob_up + prob_down + prob_flat
+        prob_up /= total
+        prob_down /= total
+        prob_flat /= total
 
-            row.append(round(payoff, 2))
-        matrix.append(row)
+        st.subheader("Scenario Probabilities")
+        st.write(f"• Stock Up > +{percent_up}%: **{prob_up:.2%}**")
+        st.write(f"• Stock Down > -{percent_down}%: **{prob_down:.2%}**")
+        st.write(f"• Flat (within range): **{prob_flat:.2%}**")
 
-    df = pd.DataFrame(matrix, index=strategies, columns=scenarios)
-    st.subheader("Payoff Matrix")
-    st.dataframe(df)
+        # Payoff Matrix
+        strategies = ['Buy Call', 'Buy Put', 'Write Call', 'Write Put']
+        scenarios = [f'Up {percent_up}%', f'Down {percent_down}%', 'Flat']
+        matrix = []
 
-    st.subheader("📌 Strategy Recommendations")
-    row_mins = np.min(matrix, axis=1)
-    minimax = np.max(row_mins)
-    minimax_strategy = strategies[np.argmax(row_mins)]
+        for strat in strategies:
+            row = []
+            for s in scenarios:
+                if 'Up' in s:
+                    price = st.session_state.strike * (1 + percent_up / 100)
+                elif 'Down' in s:
+                    price = st.session_state.strike * (1 - percent_down / 100)
+                else:
+                    price = st.session_state.strike
 
-    matrix_np = np.array(matrix)
-    ev = np.dot(matrix_np, [prob_up, prob_down, prob_flat])
-    best_ev_strategy = strategies[np.argmax(ev)]
+                call_price = calls[calls['strike'] == st.session_state.strike]['lastPrice'].values[0]
+                put_price = puts[puts['strike'] == st.session_state.strike]['lastPrice'].values[0]
 
-    st.write(f"🛡 Minimax: **{minimax_strategy}** (${minimax:.2f})")
-    st.write(f"🎯 Expected Value: **{best_ev_strategy}** (${ev[np.argmax(ev)]:.2f})")
+                if strat == 'Buy Call':
+                    payoff = (max(0, price - st.session_state.strike) - call_price) * 100 * num_contracts
+                elif strat == 'Buy Put':
+                    payoff = (max(0, st.session_state.strike - price) - put_price) * 100 * num_contracts
+                elif strat == 'Write Call':
+                    payoff = (call_price - max(0, price - st.session_state.strike)) * 100 * num_contracts
+                elif strat == 'Write Put':
+                    payoff = (put_price - max(0, st.session_state.strike - price)) * 100 * num_contracts
 
+                row.append(round(payoff, 2))
+            matrix.append(row)
+
+        df = pd.DataFrame(matrix, index=strategies, columns=scenarios)
+        st.subheader("Payoff Matrix")
+        st.dataframe(df)
+
+        st.subheader("📌 Strategy Recommendations")
+        row_mins = np.min(matrix, axis=1)
+        minimax = np.max(row_mins)
+        minimax_strategy = strategies[np.argmax(row_mins)]
+
+        ev = np.dot(matrix, [prob_up, prob_down, prob_flat])
+        best_ev_strategy = strategies[np.argmax(ev)]
+
+        st.write(f"🛡 Minimax: **{minimax_strategy}** (${minimax:.2f})")
+        st.write(f"🎯 Expected Value: **{best_ev_strategy}** (${ev[np.argmax(ev)]:.2f})")
 
 # -----------------------------
 # ⚠️ Disclaimer (Soft Gray)
