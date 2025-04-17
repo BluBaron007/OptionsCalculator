@@ -5,9 +5,8 @@ import pandas as pd
 from scipy.stats import norm
 import datetime
 
-# -----------------------------
-# 🔧 CSS for Background and Responsive Design
-# -----------------------------
+# CSS for Background and Responsive Design
+
 st.markdown("""
     <style>
     /* Base background */
@@ -49,9 +48,8 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# -----------------------------
 # Session State Initialization
-# -----------------------------
+
 if 'last_ticker' not in st.session_state:
     st.session_state.last_ticker = None
 if 'exp_date' not in st.session_state:
@@ -60,7 +58,7 @@ if 'strike' not in st.session_state:
     st.session_state.strike = None
 
 # -----------------------------
-# 🧊 Logo Only (Centered, Transparent, Clean, Responsive)
+# Logo Only (Centered, Transparent, Clean, Responsive)
 # -----------------------------
 st.markdown("""
     <div style='text-align: center;'>
@@ -70,9 +68,8 @@ st.markdown("""
     <hr>
 """, unsafe_allow_html=True)
 
-# -----------------------------
-# 📦 Form Section
-# -----------------------------
+# Form Section
+
 st.markdown("<div class='glass-form'>", unsafe_allow_html=True)
 
 with st.form("input_form"):
@@ -121,9 +118,8 @@ with st.form("input_form"):
 
 st.markdown("</div>", unsafe_allow_html=True)
 
-# -----------------------------
-# 📈 Run the Strategy
-# -----------------------------
+# Run the Strategy
+
 if submit:
     st.markdown("---")
     st.subheader("Market Snapshot")
@@ -150,7 +146,7 @@ if submit:
         unsafe_allow_html=True
     )
 
-    # --- Trend Logic ---
+    # Trend Logic
     expiry_date = datetime.datetime.strptime(st.session_state.exp_date, "%Y-%m-%d")
     days_to_expiry = (expiry_date - datetime.datetime.today()).days
 
@@ -263,9 +259,8 @@ if submit:
         st.write(f"🛡 Minimax: **{minimax_strategy}** (${minimax:.2f})")
         st.write(f"🎯 Expected Value: **{best_ev_strategy}** (${ev[np.argmax(ev)]:.2f})")
 
-# -----------------------------
-# ⚠️ Disclaimer (Soft Gray, Responsive)
-# -----------------------------
+# Disclaimer (Soft Gray, Responsive)
+
 st.markdown("""
 <hr>
 <p style='font-size: 0.85em; color: #999999; text-align: center; padding: 0 10px;'>
